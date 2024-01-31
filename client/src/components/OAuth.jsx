@@ -1,35 +1,37 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import { app } from '../firebase';
-import { useDispatch } from 'react-redux';
-import { signInSuccess } from '../redux/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginFailure, loginStart, loginSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom'
+import toasty from '../utils/Toast';
 
 const OAuth = () => {
+    const { loading } = useSelector(state => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const handleGoogleClick = async () => {
         try {
+            dispatch(loginStart());
             const provider = new GoogleAuthProvider();
             const auth = getAuth(app);
-
             const result = await signInWithPopup(auth, provider);
-            console.log(result);
             const res = await fetch('/api/auth/google', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ name: result.user.displayName, email: result.user.email, photo: result.user.photoURL }),
+                body: JSON.stringify({ name: result.user.displayName, email: result.user.email }),
             })
             const data = await res.json();
-            dispatch(signInSuccess(data));
-            navigate('/');
+            dispatch(loginSuccess(data));
+            navigate('/quiz');
         } catch (error) {
-            console.log("Could not sign in with Google", error)
+            dispatch(loginFailure(error));
+            toasty("Could not sign in with Google", "error")
         }
     }
     return (
-        <button onClick={handleGoogleClick} type='button' className='bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-95'>Continue with Google</button>
+        <button onClick={handleGoogleClick} type='button' disabled={loading} className="w-full py-2 bg-[#4477a6] text-white rounded-md hover:opacity-95 disabled:opacity-80">Continue with Google</button>
     )
 }
 

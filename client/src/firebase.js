@@ -6,11 +6,11 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "real-estate-management-75547.firebaseapp.com",
-  projectId: "real-estate-management-75547",
-  storageBucket: "real-estate-management-75547.appspot.com",
-  messagingSenderId: "544900288696",
-  appId: "1:544900288696:web:8515e94fb6b9516d8ca44d"
+  authDomain: "quiz-app-58f71.firebaseapp.com",
+  projectId: "quiz-app-58f71",
+  storageBucket: "quiz-app-58f71.appspot.com",
+  messagingSenderId: "129063520",
+  appId: "1:129063520:web:a0e019c0a9344e554c8105"
 };
 
 // Initialize Firebase
