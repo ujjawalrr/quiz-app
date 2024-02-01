@@ -60,6 +60,7 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
             }
         });
         setEvaluating(false);
+        navigate('/dashboard');
     }
     console.log("evaluated", evaluated);
 
