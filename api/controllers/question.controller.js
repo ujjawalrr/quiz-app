@@ -36,3 +36,27 @@ export const getQuestions = async (req, res, next) => {
         next(error);
     }
 }
+
+export const evaluateQuestion = async (req, res, next) => {
+    const { questionId, subQuestionId, markedAns } = req.body;
+    try {
+        const question = await Question.findById(questionId);
+        
+        if (!question) {
+            return next(errorHandler(404, 'Question not found!'));
+        }
+        
+        const subQuestion = question.subQuestions.id(subQuestionId);
+        
+        if (!subQuestion) {
+            return next(errorHandler(404, 'subQuestion not found!'));
+        }
+        if(markedAns == subQuestion.correctAns){
+            return res.status(200).json(true);
+        }
+        
+        res.status(200).json(false);
+    } catch (error) {
+        next(error);
+    }
+}

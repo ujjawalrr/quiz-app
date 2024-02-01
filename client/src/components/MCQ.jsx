@@ -1,10 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { updateAttemptedQuestions } from '../redux/question/questionSlice';
 
 const MCQ = ({ question }) => {
-  const [data, setData] = useState({});
+  const { attemptedQuestions } = useSelector(state => state.question)
+  const dispatch = useDispatch()
+  const [data, setData] = useState(attemptedQuestions);
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   }
+  useEffect(() => {
+    dispatch(updateAttemptedQuestions(data));
+  }, [data]);
 
   return (<>
     {question &&
@@ -18,10 +25,10 @@ const MCQ = ({ question }) => {
               <div className='flex flex-auto items-center justify-between'>
                 {subQuestion.question.map((option, optionIndex) =>
                   <div key={optionIndex}>
-                    <label htmlFor={`${subQuestion._id}${optionIndex + 1}`} className={`text-white text-2xl min-w-24 min-h-24 flex justify-center items-center transition-all duration-500 ease-in-out ${data[`${subQuestion._id}`] == option ? 'bg-[#ef7931] transform scale-125 skew-x-12 rotate-15' : 'bg-red-500'}`}>
+                    <label htmlFor={`${subQuestion._id}${optionIndex + 1}`} className={`cursor-pointer text-white text-3xl min-w-20 min-h-20 flex justify-center items-center transition-all duration-700 ease-in-out hover:opacity-90 ${attemptedQuestions[`${question._id}_${subQuestion._id}`] == option ? 'bg-yellow-500 transform scale-125 rounded-full' : 'bg-[#ef7931] hover:scale-105'}`}>
                       {option}
                     </label>
-                    <input hidden type="radio" name={subQuestion._id} id={`${subQuestion._id}${optionIndex + 1}`} value={option} onChange={handleChange} />
+                    <input hidden type="radio" name={`${question._id}_${subQuestion._id}`} id={`${subQuestion._id}${optionIndex + 1}`} value={option} onChange={handleChange} />
                   </div>
                 )}
               </div>

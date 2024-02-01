@@ -15,7 +15,7 @@ const MatchTheColumns = ({ question }) => {
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   }
-  console.log(data);
+  // console.log(data);
 
   return (<>
     {question &&
