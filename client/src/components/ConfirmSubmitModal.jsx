@@ -10,7 +10,7 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
     const { attemptedQuestions } = useSelector(state => state.question)
     const [countSolved, setCountSolved] = useState(0);
     const [evaluating, setEvaluating] = useState(false);
-    const [evaluated, setEvaluated] = useState({});
+    const [evaluated, setEvaluated] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const handleClose = () => setShowModal(false);
     const handleShow = () => {
@@ -50,19 +50,20 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
     }
 
     const handleSubmit = async () => {
-        setEvaluating(true);
-
+        setEvaluating(true);        
         Object.entries(attemptedQuestions).forEach(async ([key, value]) => {
             const parts = key.split('_');
+            let subQuestionId = parts[1];
             if (value != '') {
                 let checkSol = await checkSolution(parts[0], parts[1], value);
-                setEvaluated({ ...evaluated, [parts[1]]: checkSol });
+                console.log(subQuestionId, checkSol);
+                setEvaluated({ ...evaluated, [subQuestionId]: checkSol });
             }
         });
         setEvaluating(false);
-        navigate('/dashboard');
+        console.log("evaluated", evaluated);
+        // navigate('/dashboard');
     }
-    console.log("evaluated", evaluated);
 
     return (
         <div>
