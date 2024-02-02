@@ -2,24 +2,85 @@ import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import { FaUser } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const Dashboard = ({ userName, userRank, totalUsers }) => {
+  const { currentUser } = useSelector(state => state.user)
+  const [questions, setQuestions] = useState([]);
+  const [totalQuestions, setTotalQuestions] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  useEffect(() => {
+    const loadQuestions = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/question`);
+        const data = await res.json();
+        if (data.success === false) {
+          setError(true);
+          setLoading(false);
+          return;
+        }
+        setLoading(false);
+        setError(false);
+        setQuestions(data);
+      } catch (error) {
+        setLoading(false);
+        setError(true);
+      }
+    }
+    loadQuestions();
+  }, []);
+  useEffect(() => {
+    let count = 0;
+    for (let index = 0; index < questions.length; index++) {
+      count += questions[index].subQuestions.length;
+    }
+    setTotalQuestions(count);
+  }, [questions]);
+  console.log(questions);
+
+  const appearedUsers = [
+    {
+      name: 'Ujjawal Kumar',
+      marks: 6
+    },
+    {
+      name: 'Mayuresh Kumar',
+      marks: 6
+    },
+    {
+      name: 'Ujj',
+      marks: 6
+    },
+    {
+      name: 'Rakesh',
+      marks: 6
+    }
+  ]
+
+
+
   const totalMarks = 100;
   const correctMarks = 75;
   const incorrectMarks = 15;
   const unansweredMarks = 10;
 
+  const report = {
+    // Questions - ID
+    // Questions - correct answer, wrong ans, unanswered
+    // Total Users
+    // Array of Marks - rank using this array
+
+  }
   const [selectedStars, setSelectedStars] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     if (selectedStars) {
-      // Set a timeout to hide the message after 3 seconds
       const timeoutId = setTimeout(() => {
         setShowMessage(false);
       }, 2000);
-
-      // Clear the timeout when the component is unmounted or when selectedStars changes
       return () => clearTimeout(timeoutId);
     }
   }, [selectedStars]);
@@ -51,6 +112,7 @@ const Dashboard = ({ userName, userRank, totalUsers }) => {
     },
   };
 
+
   return (
     <>
       <div className="flex bg-gradient-to-r from-yellow-400 to-yellow-600 items-center p-3">
@@ -60,7 +122,7 @@ const Dashboard = ({ userName, userRank, totalUsers }) => {
         <div className="ml-auto mr-4">
           <div className="flex items-center">
             <FaUser className="text-white mr-2" />
-            <span className="text-white">Profile</span>
+            <span className="text-white">{currentUser.name}</span>
           </div>
         </div>
       </div>
@@ -84,7 +146,7 @@ const Dashboard = ({ userName, userRank, totalUsers }) => {
           {/* Total Marks Card */}
           <div className="bg-white p-4 rounded-md shadow-md">
             <h3 className="text-lg font-semibold mb-2">Total Marks Scored</h3>
-            <p className="text-2xl font-bold text-gray-700">{totalMarks}</p>
+            <p className="text-2xl font-bold text-gray-700">5/10</p>
           </div>
 
           {/* Correct Marks Card */}

@@ -16,6 +16,7 @@ const MatchTheColumns = ({ question }) => {
     setData({ ...data, [e.target.name]: e.target.value });
   }
   // console.log(data);
+  const colours = ['', 'yellow', 'green', 'blue'];
 
   return (<>
     {question &&
@@ -26,12 +27,12 @@ const MatchTheColumns = ({ question }) => {
           {question.subQuestions.map((subQuestion, index) =>
             <div className='flex gap-3 items-center justify-between' key={subQuestion._id}>
               <div className='font-semibold text-2xl'>{String.fromCharCode(index + 97)})</div>
-              <div className='flex flex-auto items-center'>
-                <label htmlFor={subQuestion._id} className={`text-2xl w-[140px]`}>
+              <div className='flex flex-auto items-center justify-between'>
+                <label htmlFor={subQuestion._id} className={`text-2xl w-[140px] p-3 bg-[${colours[index]}] `} >
                   {subQuestion.question[0]}
                 </label>
                 <input hidden type="number" className='bg-slate-200 p-2 border-b-2 border-black focus:outline-none focus:bg-slate-300' name={subQuestion._id} id={subQuestion._id} onChange={handleChange} />
-                <label htmlFor={subQuestion._id} className={`text-2xl w-[140px]`}>
+                <label htmlFor={subQuestion._id} className={`text-2xl w-[140px] bg-gray-500 p-3`}>
                   {shuffledOptions[index]}
                 </label>
               </div>
