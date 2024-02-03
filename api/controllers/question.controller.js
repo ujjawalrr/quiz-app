@@ -13,7 +13,7 @@ export const createQuestion = async (req, res, next) => {
 export const getQuestion = async (req, res, next) => {
     try {
         const question = await Question.findById(req.params.id);
-        if(!question) {
+        if (!question) {
             return next(errorHandler(404, 'Question not found!'));
         }
         res.status(200).json(question);
@@ -22,15 +22,65 @@ export const getQuestion = async (req, res, next) => {
     }
 }
 
-export const getQuestions = async (req, res, next) => {
+export const getOptions = async (req, res, next) => {
     try {
-        let type = req.query.type;
+        const question = await Question.findById(req.params.id);
+        if (!question) {
+            return next(errorHandler(404, 'Question not found!'));
+        }
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+          }
+          const options = question.subQuestions.map(obj => obj.correctAns);
+          const shuffledOptions = shuffle(options);
+        res.status(200).json(shuffledOptions);
+    } catch (error) {
+        next(error);
+    }
+}
 
-        if(type === undefined || type === 'all'){
-            type = { $in: ['mcq', 'match', 'fill'] };
+export const getQuestions = async (req, res, next) => {
+    const { type, includeCorrectAns } = req.query;
+    try {
+        let matchQuery = {};
+        if (type) {
+            matchQuery = { type: type.toLowerCase() };
         }
 
-        const questions = await Question.find({ type });
+        const projection = {
+            title: 1,
+            type: 1,
+            subQuestions: {
+                $map: {
+                    input: "$subQuestions",
+                    as: "subQuestion",
+                    in: {
+                        question: "$$subQuestion.question",
+                        marks: "$$subQuestion.marks",
+                        correctAns: {
+                            $cond: {
+                                if: { $eq: [includeCorrectAns, 'true'] },
+                                then: "$$subQuestion.correctAns",
+                                else: "$$REMOVE"
+                            }
+                        },
+                        _id: "$$subQuestion._id"
+                    }
+                }
+            }
+        };
+
+        const questions = await Question.aggregate([
+            { $match: matchQuery },
+            { $project: projection }
+        ]);
+        if (!questions) {
+            return next(errorHandler(404, 'Questions not found!'));
+        }
         res.status(200).json(questions);
     } catch (error) {
         next(error);
@@ -41,20 +91,20 @@ export const evaluateQuestion = async (req, res, next) => {
     const { questionId, subQuestionId, markedAns } = req.body;
     try {
         const question = await Question.findById(questionId);
-        
+
         if (!question) {
             return next(errorHandler(404, 'Question not found!'));
         }
-        
+
         const subQuestion = question.subQuestions.id(subQuestionId);
-        
+
         if (!subQuestion) {
             return next(errorHandler(404, 'subQuestion not found!'));
         }
-        if(markedAns == subQuestion.correctAns){
+        if (markedAns == subQuestion.correctAns) {
             return res.status(200).json(true);
         }
-        
+
         res.status(200).json(false);
     } catch (error) {
         next(error);

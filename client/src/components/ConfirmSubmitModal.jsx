@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import toasty from '../utils/Toast';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateAttemptedQuestions } from '../redux/question/questionSlice';
+import { updateAttemptedQuestions, updateCheckedQuestions } from '../redux/question/questionSlice';
 
 const ConfirmSubmitModal = ({ totalQuestions }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { attemptedQuestions } = useSelector(state => state.question)
+    const { attemptedQuestions, checkedQuestions } = useSelector(state => state.question)
     const [countSolved, setCountSolved] = useState(0);
     const [evaluating, setEvaluating] = useState(false);
-    const [evaluated, setEvaluated] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const handleClose = () => setShowModal(false);
     const handleShow = () => {
@@ -21,10 +20,10 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
             }
         });
         dispatch(updateAttemptedQuestions(attemptedQuestionsObj));
-        setCountSolved(Object.keys(attemptedQuestions).length)
+        setCountSolved(Object.keys(attemptedQuestionsObj).length);
+        console.log(attemptedQuestions, "attempted question");
         setShowModal(true);
     };
-    const [message, setMessage] = useState('');
 
     const checkSolution = async (questionId, subQuestionId, markedAns) => {
         try {
@@ -50,24 +49,28 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
     }
 
     const handleSubmit = async () => {
-        setEvaluating(true);        
-        Object.entries(attemptedQuestions).forEach(async ([key, value]) => {
-            const parts = key.split('_');
-            let subQuestionId = parts[1];
-            if (value != '') {
-                let checkSol = await checkSolution(parts[0], parts[1], value);
-                console.log(subQuestionId, checkSol);
-                setEvaluated({ ...evaluated, [subQuestionId]: checkSol });
-            }
-        });
+        setEvaluating(true);
+        let checkedQuestionsObj = {};
+        try {
+            await Promise.all(Object.entries(attemptedQuestions).map(async ([key, value]) => {
+                const parts = key.split('_');
+                let subQuestionId = parts[1];
+                if (value !== '') {
+                    let checkSol = await checkSolution(parts[0], parts[1], value);
+                    checkedQuestionsObj[subQuestionId] = checkSol;
+                }
+            }));
+            dispatch(updateCheckedQuestions(checkedQuestionsObj));
+        } catch (error) {
+            console.error("Error occurred while checking solutions: ", error);
+        }
         setEvaluating(false);
-        console.log("evaluated", evaluated);
-        // navigate('/dashboard');
+        navigate('/dashboard');
     }
 
     return (
         <div>
-            <button onClick={handleShow} className='bg-red-500 text-white py-2 px-6 rounded-md hover:opacity-95 disabled:opacity-80'>Submit Quiz</button>
+            <button onClick={handleShow} className='bg-red-500 text-white py-2 px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Submit Quiz</button>
             {showModal && (
                 <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
                     <div className="absolute w-full h-full bg-gray-900 opacity-50" onClick={handleClose}></div>

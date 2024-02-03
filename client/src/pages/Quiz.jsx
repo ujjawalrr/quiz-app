@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import React from 'react'
+import { useEffect, useState } from 'react';
 import whiteboard from '../assets/images/whiteboard.png'
 import MCQ from '../components/MCQ';
 import MatchTheColumns from '../components/MatchTheColumns';
@@ -43,24 +44,26 @@ const Quiz = () => {
     }
     setTotalQuestions(count);
   }, [questions]);
-
   return (
     <div className="container-full flex items-center justify-center h-[100vh] bg-gradient-to-b from-[#4477a6] to-[#91a4b5]">
-      <div className='relative'>
-        <div className=''>
-          <img src={whiteboard} alt="" />
+      <div className='relative w-full sm:w-[600px] md:w-[750px] tb:w-[850px]'>
+        <div className='h-full w-full'>
+          <img src={whiteboard} className='w-full min-h-[560px]' alt="" />
         </div>
-        <div className='p-12 absolute top-0 w-full h-full flex justify-center'>
+        <div className='py-9 px-6 sm:px-8 md:px-12 absolute top-0 w-full h-full flex items-center justify-center'>
           {questions && questions.length > 0 &&
-            <div className='w-full'>
+            <div className='w-full h-full flex flex-col justify-between'>
+              {questions.map((question, index) =>
+                <React.Fragment key={question._id}>
+                  {question.type == 'mcq' && activeTab == '1' && <MCQ question={question} questionNumber={index + 1} />}
+                  {question.type == 'match' && activeTab == '2' && <MatchTheColumns question={question} questionNumber={index + 1} />}
+                  {question.type == 'fill' && activeTab == '3' && <FillInTheBlanks question={question} questionNumber={index + 1} />}
+                </React.Fragment>
+              )}
 
-              {activeTab == '1' && <MCQ question={questions[0]} />}
-              {activeTab == '2' && <MatchTheColumns question={questions[1]} />}
-              {activeTab == '3' && <FillInTheBlanks question={questions[2]} />}
-
-              <div className={`mt-4 pr-20 flex items-center w-full ${activeTab == '1' ? 'justify-end' : 'justify-between'}`}>
-                {activeTab > '1' && <button onClick={() => openTab(parseInt(activeTab) - 1)} className='bg-[#fdd341] text-white py-2 px-6 rounded-md hover:opacity-95 disabled:opacity-80'>Previous</button>}
-                {activeTab < questions.length.toString() && <button onClick={() => openTab(parseInt(activeTab) + 1)} className='bg-[#fdd341] text-white py-2 px-6 rounded-md hover:opacity-95 disabled:opacity-80'>Next</button>}
+              <div className={`xs:px-10 pb-14 flex items-center w-full ${activeTab == '1' ? 'justify-end' : 'justify-between'}`}>
+                {activeTab > '1' && <button onClick={() => openTab(parseInt(activeTab) - 1)} className='bg-[#fdd341] text-white py-2 px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Previous</button>}
+                {activeTab < questions.length.toString() && <button onClick={() => openTab(parseInt(activeTab) + 1)} className='bg-[#fdd341] text-white py-2 px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Next</button>}
                 {activeTab == questions.length && <ConfirmSubmitModal totalQuestions={totalQuestions} />}
               </div>
             </div>
