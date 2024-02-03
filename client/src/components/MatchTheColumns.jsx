@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const MatchTheColumns = ({ question, questionNumber }) => {
+const MatchTheColumns = ({ question, questionNumber, disabled }) => {
   const [shuffledOptions, setShuffledOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -60,7 +60,7 @@ const MatchTheColumns = ({ question, questionNumber }) => {
                   <label htmlFor={subQuestion._id} className={`text-xl xs:text-2xl shadow-md z-0 rounded-lg p-2 w-[105px] sm:w-[140px] text-center bg-red-500 bg-[${colours[index]}] `} >
                     {subQuestion.question[0]}
                   </label>
-                  <input hidden type="number" className='bg-slate-200 p-2 border-b-2 border-black focus:outline-none focus:bg-slate-300' name={subQuestion._id} id={subQuestion._id} onChange={handleChange} />
+                  <input disabled={disabled} hidden type="number" className='bg-slate-200 p-2 border-b-2 border-black focus:outline-none focus:bg-slate-300' name={subQuestion._id} id={subQuestion._id} onChange={handleChange} />
                   <div className='w-[100px] sm:w-[140px] text-center'>
                     <label htmlFor={subQuestion._id} className={`text-xl xs:text-2xl shadow-md z-0 rounded-lg p-2 inline-block w-[50px] xs:w-[80px] text-center bg-gray-500`}>
                       {shuffledOptions[index]}

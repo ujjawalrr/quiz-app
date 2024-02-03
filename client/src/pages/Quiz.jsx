@@ -55,9 +55,9 @@ const Quiz = () => {
             <div className='w-full h-full flex flex-col justify-between'>
               {questions.map((question, index) =>
                 <React.Fragment key={question._id}>
-                  {question.type == 'mcq' && activeTab == '1' && <MCQ question={question} questionNumber={index + 1} />}
-                  {question.type == 'match' && activeTab == '2' && <MatchTheColumns question={question} questionNumber={index + 1} />}
-                  {question.type == 'fill' && activeTab == '3' && <FillInTheBlanks question={question} questionNumber={index + 1} />}
+                  {question.type == 'mcq' && activeTab == '1' && <MCQ question={question} questionNumber={index + 1} disabled={false} />}
+                  {question.type == 'match' && activeTab == '2' && <MatchTheColumns question={question} questionNumber={index + 1} disabled={false} />}
+                  {question.type == 'fill' && activeTab == '3' && <FillInTheBlanks question={question} questionNumber={index + 1} disabled={false} />}
                 </React.Fragment>
               )}
 

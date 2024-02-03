@@ -1,10 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    questions: [],
-    attemptedQuestions: {},
-    checkedQuestions: null,
-    error: null,
+    attemptedQuestions: false,
+    checkedQuestions: false,
+    error: false,
     loading: false,
 };
 
@@ -14,22 +13,22 @@ const questionSlice = createSlice ({
     reducers: {
         neutral: (state) => {
             state.loading = false;
-            state.error = null;
+            state.error = false;
         },
         updateQuestions: (state, action) => {
             state.questions = action.payload;
             state.loading = false;
-            state.error = null;
+            state.error = false;
         },
         updateAttemptedQuestions: (state, action) => {
             state.attemptedQuestions = action.payload;
             state.loading = false;
-            state.error = null;
+            state.error = false;
         },
         updateCheckedQuestions: (state, action) => {
             state.checkedQuestions = action.payload;
             state.loading = false;
-            state.error = null;
+            state.error = false;
         }
     }
 })

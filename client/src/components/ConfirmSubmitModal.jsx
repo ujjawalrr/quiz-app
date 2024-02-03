@@ -57,10 +57,16 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
                 let subQuestionId = parts[1];
                 if (value !== '') {
                     let checkSol = await checkSolution(parts[0], parts[1], value);
-                    checkedQuestionsObj[subQuestionId] = checkSol;
+                    checkedQuestionsObj[subQuestionId] = {
+                        status: checkSol,
+                        markedAns: value,
+                        questionId: parts[0],
+                        subQuestionId: subQuestionId
+                    };
                 }
             }));
             dispatch(updateCheckedQuestions(checkedQuestionsObj));
+            dispatch(updateAttemptedQuestions('false'));
         } catch (error) {
             console.error("Error occurred while checking solutions: ", error);
         }
