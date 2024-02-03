@@ -4,17 +4,23 @@ import "chart.js/auto";
 import { FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
-const Dashboard = ({ userName, userRank, totalUsers }) => {
-  const { currentUser } = useSelector(state => state.user)
+const Dashboard = () => {
+  const { currentUser } = useSelector((state) => state.user);
   const [questions, setQuestions] = useState([]);
-  const [totalQuestions, setTotalQuestions] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [correctQuestions, setCorrectQuestions] = useState(0);
+  const [incorrectQuestions, setIncorrectQuestions] = useState(0);
+  const [unansweredQuestions, setUnansweredQuestions] = useState(0);
+  const [totalQuestions, setTotalQuestions] = useState(0);
+  const { attemptedQuestions, checkedQuestions } = useSelector(
+    (state) => state.question
+  );
   useEffect(() => {
     const loadQuestions = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/question`);
+        const res = await fetch(`/api/question?includeCorrectAns=true`);
         const data = await res.json();
         if (data.success === false) {
           setError(true);
@@ -28,51 +34,68 @@ const Dashboard = ({ userName, userRank, totalUsers }) => {
         setLoading(false);
         setError(true);
       }
-    }
+    };
     loadQuestions();
   }, []);
   useEffect(() => {
-    let count = 0;
-    for (let index = 0; index < questions.length; index++) {
-      count += questions[index].subQuestions.length;
-    }
-    setTotalQuestions(count);
-  }, [questions]);
-  console.log(questions);
+    let correctCount = 0;
+    let incorrectCount = 0;
 
+    for (let index = 0; index < questions.length; index++) {
+      for (
+        let subIndex = 0;
+        subIndex < questions[index].subQuestions.length;
+        subIndex++
+      ) {
+        const subQuestion = questions[index].subQuestions[subIndex];
+        if (subQuestion.selectedAnswer === subQuestion.correctAns) {
+          correctCount += 1;
+        } else {
+          incorrectCount += 1;
+        }
+      }
+    }
+
+    setCorrectQuestions(correctCount);
+    setIncorrectQuestions(incorrectCount);
+    setTotalQuestions(correctCount + incorrectCount);
+    setUnansweredQuestions(questions.length - correctCount - incorrectCount);
+  }, [questions]);
+
+  // Users and their Ranks
   const appearedUsers = [
     {
-      name: 'Ujjawal Kumar',
-      marks: 6
+      name: "Ujjawal Kumar",
+      marks: 6,
     },
     {
-      name: 'Mayuresh Kumar',
-      marks: 6
+      name: "Mayuresh Kumar",
+      marks: 6,
     },
     {
-      name: 'Ujj',
-      marks: 6
+      name: "Ujj",
+      marks: 5,
     },
     {
-      name: 'Rakesh',
-      marks: 6
-    }
-  ]
+      name: "Rakesh",
+      marks: 2,
+    },
+  ];
 
+  const userName = currentUser.name;
+  const userMarks = 6;
 
-
-  const totalMarks = 100;
-  const correctMarks = 75;
-  const incorrectMarks = 15;
-  const unansweredMarks = 10;
+  const sortedUsers = appearedUsers.sort((a, b) => b.marks - a.marks);
+  const userRank =
+    sortedUsers.findIndex((user) => user.marks === userMarks) + 1;
+  const totalUsers = appearedUsers.length;
 
   const report = {
     // Questions - ID
     // Questions - correct answer, wrong ans, unanswered
     // Total Users
     // Array of Marks - rank using this array
-
-  }
+  };
   const [selectedStars, setSelectedStars] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
 
@@ -112,6 +135,9 @@ const Dashboard = ({ userName, userRank, totalUsers }) => {
     },
   };
 
+  const topPerformers = appearedUsers
+    .sort((a, b) => b.marks - a.marks)
+    .slice(0, 3);
 
   return (
     <>
@@ -127,15 +153,9 @@ const Dashboard = ({ userName, userRank, totalUsers }) => {
         </div>
       </div>
 
-      <div className="bg-gray-100 p-8 rounded-md shadow-md w-4/5 mx-auto my-8">
-        <div className="text-left">
+      <div className="w-4/5 mx-auto my-8">
+        <div className="text-center">
           <h2 className="text-3xl font-semibold mb-4">Performance Report</h2>
-          <p className="text-gray-700">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </p>
-          <button className="bg-gradient-to-r from-orange-500 via-orange-300 to-yellow-300 text-white py-2 px-4 mt-4 rounded-md">
-            Learn More
-          </button>
         </div>
       </div>
 
@@ -143,31 +163,86 @@ const Dashboard = ({ userName, userRank, totalUsers }) => {
         <h2 className="text-3xl font-semibold mb-4">Overview</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {/* Total Marks Card */}
           <div className="bg-white p-4 rounded-md shadow-md">
             <h3 className="text-lg font-semibold mb-2">Total Marks Scored</h3>
-            <p className="text-2xl font-bold text-gray-700">5/10</p>
+            <p className="text-2xl font-bold text-gray-700">
+              {correctQuestions}/{totalQuestions}
+            </p>
           </div>
 
-          {/* Correct Marks Card */}
           <div className="bg-white p-4 rounded-md shadow-md">
             <h3 className="text-lg font-semibold mb-2">Correct</h3>
-            <p className="text-2xl font-bold text-green-500">{correctMarks}</p>
+            <p className="text-2xl font-bold text-green-500">
+              {correctQuestions}
+            </p>
           </div>
 
-          {/* Incorrect Marks Card */}
           <div className="bg-white p-4 rounded-md shadow-md">
             <h3 className="text-lg font-semibold mb-2">Incorrect</h3>
-            <p className="text-2xl font-bold text-red-500">{incorrectMarks}</p>
+            <p className="text-2xl font-bold text-red-500">
+              {incorrectQuestions}
+            </p>
           </div>
 
-          {/* Unanswered Marks Card */}
           <div className="bg-white p-4 rounded-md shadow-md">
             <h3 className="text-lg font-semibold mb-2">Unanswered</h3>
             <p className="text-2xl font-bold text-gray-700">
-              {unansweredMarks}
+              {unansweredQuestions}
             </p>
           </div>
+        </div>
+      </div>
+
+      <div className="w-4/5 mx-auto my-2">
+        <div className="text-center">
+          <button className="bg-gradient-to-r from-orange-500 via-orange-300 to-yellow-300 text-white py-2 px-4 mt-2 rounded-md">
+            View Solutions
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-gray-100 p-8 rounded-md shadow-md w-4/5 mx-auto my-8">
+        <h2 className="text-3xl font-semibold mb-4">Stats</h2>
+
+        <div className="flex">
+          <div className="w-4/5 pr-4">
+            <Bar data={data} options={options} />
+          </div>
+
+          <div className="w-1/5">
+            <p className="text-lg font-semibold mb-2">{`Hey ${userName},`}</p>
+            <p className="text-2xl text-green-500">{`Your Rank: ${userRank}`}</p>
+            <p className="text-gray-700 mt-4">{`Out of ${totalUsers} users`}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-gray-100 p-8 rounded-md shadow-md w-4/5 mx-auto my-8">
+        <h2 className="text-3xl font-semibold mb-4 text-center text-orange-500">
+          🌟 Top Performers 🌟
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {topPerformers.map((performer, index) => (
+            <div
+              key={index}
+              className="relative bg-white p-6 rounded-md shadow-md transition-transform transform hover:scale-105"
+            >
+              <div className="absolute top-0 right-0 bg-gradient-to-r from-orange-500 via-orange-300 to-yellow-300 text-white px-2 py-1 rounded-tl-md rounded-br-md">
+                <span className="font-bold text-lg">Rank #{index + 1}</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">{`Name: ${performer.name}`}</h3>
+              <p className="text-2xl font-bold text-indigo-600">{`Marks Obtained: ${performer.marks} / ${totalQuestions}`}</p>
+              <div className="relative mt-4 h-4 bg-gray-300 rounded overflow-hidden">
+                <div
+                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-500 to-blue-500 rounded"
+                  style={{
+                    width: `${(performer.marks / totalQuestions) * 100}%`,
+                  }}
+                ></div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -182,11 +257,9 @@ const Dashboard = ({ userName, userRank, totalUsers }) => {
             <button
               key={stars}
               onClick={() => handleStarClick(stars)}
-              className={`text-2xl focus:outline-none ${
-                stars <= selectedStars ? "text-yellow-500" : "text-gray-300"
-              }`}
+              className="text-xl focus:outline-none text-black-800"
             >
-              ⭐
+              {stars <= selectedStars ? "⭐" : "☆"}
             </button>
           ))}
         </div>
@@ -197,28 +270,6 @@ const Dashboard = ({ userName, userRank, totalUsers }) => {
             valuable.
           </p>
         )}
-      </div>
-
-      <div className="bg-gray-100 p-8 rounded-md shadow-md w-4/5 mx-auto my-8">
-        <h2 className="text-3xl font-semibold mb-2">Stats</h2>
-        <p className="mb-4">
-          Comparison of your standing with other learners and the topper of the
-          live test
-        </p>
-
-        <div className="flex">
-          {/* Graph */}
-          <div className="w-3/4 pr-4">
-            <Bar data={data} options={options} />
-          </div>
-
-          {/* Text Rank */}
-          <div className="w-1/4">
-            <p className="text-lg font-semibold mb-2">{`Hey ${userName},`}</p>
-            <p className="text-2xl text-green-500">{`Your Rank: ${userRank}`}</p>
-            <p className="text-gray-700 mt-4">{`Out of ${totalUsers} users`}</p>
-          </div>
-        </div>
       </div>
     </>
   );
