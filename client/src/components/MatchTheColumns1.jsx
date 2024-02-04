@@ -1,128 +1,193 @@
-import React, { useState, useEffect } from "react";
+// import React, { useState } from "react";
+// import Xarrow, { useXarrow, xarrowPropsType, Xwrapper } from "react-xarrows";
+// import Draggable from "react-draggable";
 
-const questions = [
-  "22 + 13",
-  "34 + 15",
-  "45 + 30",
-  "50 + 12",
-];
+// const boxStyle = {
+//   border: "1px #999 solid",
+//   borderRadius: "10px",
+//   textAlign: "center",
+//   width: "100px",
+//   height: "30px",
+//   color: "black",
+//   alignItems: "center",
+//   display: "flex",
+//   justifyContent: "center",
+// };
 
-const answers = ["49", "62", "35", "75"];
+// const canvaStyle = {
+//   width: "100%",
+//   height: "100vh",
+//   background: "white",
+//   overflow: "auto",
+//   display: "flex",
+//   color: "black",
+//   cursor: "pointer",
+// };
 
-function MatchTheFollowing() {
-  const [selectedQuestion, setSelectedQuestion] = useState(null);
-  const [matches, setMatches] = useState([]);
-  const [linePositions, setLinePositions] = useState([]); // Store calculated line positions
+// const DraggableBox = ({ box, onClick }) => {
+//   return (
+//     <div
+//       id={box.id}
+//       style={{ ...boxStyle }}
+//       onClick={() => {
+//         onClick(box.id);
+//       }}
+//     >
+//       {box.id}
+//     </div>
+//   );
+// };
 
-  useEffect(() => {
-    // Calculate and store line positions on mount
-    const newLinePositions = matches.map((match, index) => {
-      const questionIndex = questions.indexOf(match.question);
-      const answerIndex = answers.indexOf(match.answer);
-      const questionButtonRef = document.getElementById(
-        `question-${questionIndex}`
-      );
-      const answerButtonRef = document.getElementById(`answer-${answerIndex}`);
+// const boxArray = [
+//   {
+//     id: "box1",
+//     child: [
+//       { id: "box2", x: 20, y: 20 },
+//       { id: "box3", x: 20, y: 20 },
+//       { id: "box4", x: 20, y: 20 },
+//       { id: "box5", x: 20, y: 20 },
+//     ],
+//   },
+//   {
+//     id: "box6",
+//     child: [
+//       { id: "box7", x: 20, y: 20 },
+//       { id: "box8", x: 20, y: 20 },
+//       { id: "box9", x: 20, y: 20 },
+//       { id: "box10", x: 20, y: 20 },
+//     ],
+//   },
+// ];
 
-      if (questionButtonRef && answerButtonRef) {
-        const questionRect = questionButtonRef.getBoundingClientRect();
-        const answerRect = answerButtonRef.getBoundingClientRect();
-        const questionCenterX = questionRect.left + questionRect.width / 2;
-        const questionCenterY = questionRect.top + questionRect.height / 2;
-        const answerCenterX = answerRect.left + answerRect.width / 2;
-        const answerCenterY = answerRect.top + answerRect.height / 2;
-
-        // Calculate triangle properties
-        const hypotenuse = Math.sqrt(
-          Math.pow(questionCenterX - answerCenterX, 2) +
-            Math.pow(questionCenterY - answerCenterY, 2)
-        );
-        const angle = Math.atan2(
-          answerCenterY - questionCenterY,
-          answerCenterX - questionCenterX
-        );
-
-        const color = `hsl(${(360 / matches.length) * index}, 100%, 50%)`; // Assign different color for each pair
-
-        return {
-          top: `${questionCenterY}px`,
-          left: `${questionCenterX}px`,
-          transform: `translate(-10%, -10%) rotate(${angle}rad)`,
-          width: `${hypotenuse}px`,
-          backgroundColor: color,
-        };
-      } else {
-        return null; // Prevent errors if elements not yet available
-      }
-    });
-    setLinePositions(newLinePositions.filter((position) => position !== null)); // Remove null positions
-  }, [matches]); // Recalculate lines on match changes
-
-  const handleQuestionClick = (question) => {
-    setSelectedQuestion(question);
-  };
-
-  const handleAnswerClick = (answer) => {
-    if (selectedQuestion) {
-      // Unselect the first selected answer for the current question
-      const unselectedMatches = matches.filter((match) => match.question !== selectedQuestion);
-      setMatches([...unselectedMatches, { question: selectedQuestion, answer }]);
-      setSelectedQuestion(null);
-    }
-  };
-
-  return (
-    <div className="flex flex-col items-center justify-center w-full h-screen">
-      <div className="grid grid-cols-2 gap-4">
-        {/* Question Column */}
-        <div className="flex flex-col items-center">
-          {questions.map((question, index) => (
-            <button
-              key={index}
-              id={`question-${index}`}
-              className={`bg-gray-200 text-gray-700 px-4 py-2 rounded-lg ${
-                selectedQuestion === question ? 'bg-blue-400' : ''
-              }`}
-              onClick={() => handleQuestionClick(question)}
-              style={{ backgroundColor: `hsl(${(360 / questions.length) * index}, 100%, 80%)` }}
-            >
-              {question}
-            </button>
-          ))}
-        </div>
-
-        {/* Answer Column */}
-        <div className="flex flex-col items-center">
-          {answers.map((answer, index) => (
-            <button
-              key={index}
-              id={`answer-${index}`}
-              className={`bg-gray-200 text-gray-700 px-4 py-2 rounded-lg ${
-                matches.some((match) => match.answer === answer) ? 'bg-blue-400' : ''
-              }`}
-              onClick={() => handleAnswerClick(answer)}
-              style={{ backgroundColor: `hsl(${(360 / answers.length) * index}, 100%, 80%)` }}
-            >
-              {answer}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Draw lines for matches based on calculated positions */}
-      {linePositions.map((linePosition, index) => (
-        <div
-          key={index}
-          className="absolute z-10"
-          style={{
-            ...linePosition,
-            opacity: matches.length > index ? 1 : 0, // Show lines only for existing matches
-            height: "1px", // Add height for the line
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-export default MatchTheFollowing;
+// const MatchTheFollowing = () => {
+//     const updateXarrow = useXarrow();
+//     const scrollFunc = () => {
+//       console.log("hi");
+//       updateXarrow();
+//     };
+  
+//     const [point, setPoint] = useState({
+//       start: null,
+//       end: null,
+//     });
+//     const [connection, setConnection] = useState([]);
+  
+//     const setEndpoints = (e, id) => {
+//       e.stopPropagation();
+//       if (point.start && point.start !== id) {
+//         setPoint({
+//           ...point,
+//           end: id,
+//         });
+//         e.target.classList.add("bg-blue-500 hover:bg-blue-700");
+//         setConnection([...connection, { start: point.start, end: id }]);
+//         setPoint({
+//           start: null,
+//           end: null,
+//         });
+//       } else {
+//         setPoint({
+//           ...point,
+//           start: id,
+//         });
+//         e.target.classList.add("bg-blue-500 hover:bg-blue-700");
+//       }
+//     };
+  
+//     const connectNode = (e, id) => {
+//       e.stopPropagation();
+//       const draggedBoxId = point.start;
+//       if (draggedBoxId && draggedBoxId !== id) {
+//         setEndpoints(e, id);
+//       }
+//     };
+  
+//     const stopConnection = (e) => {
+//       document.onmousemove = null;
+//       document.onmousedown = null;
+//     };
+  
+//     const removeConnection = (item) => {
+//       const newarray = connection;
+//       const index = newarray.findIndex((items) => items === item);
+//       newarray.splice(index, 1);
+//       setConnection([...newarray]);
+//       document
+//         .getElementById(item.start)
+//         .classList.remove("bg-blue-500 hover:bg-blue-700");
+//       document
+//         .getElementById(item.end)
+//         .classList.remove("bg-blue-500 hover:bg-blue-700");
+//     };
+  
+//     return (
+//       <>
+//         {/* ... (styles) */}
+//         <div style={canvaStyle} id="canvas" onScroll={scrollFunc}>
+//           <Xwrapper>
+//             {boxArray.map((items) => (
+//               <Draggable
+//                 key={items.id}
+//                 handle=".handle"
+//                 onDrag={updateXarrow}
+//                 onStop={updateXarrow}
+//               >
+//                 <div className="container-side" id={items.id}>
+//                   <h3 className="handle">{items.id}</h3>
+//                   {items.child.map((item) => (
+//                     <div
+//                       key={item.id}
+//                       style={{
+//                         display: "flex",
+//                         justifyContent: "space-between",
+//                         alignItems: "center",
+//                       }}
+//                     >
+//                       <div
+//                         id={item.id}
+//                         style={{ ...boxStyle }}
+//                         onClick={(e) => setEndpoints(e, item.id)}
+//                         onMouseDown={(e) => connectNode(e, item.id)}
+//                       >
+//                         {item.id}
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+//               </Draggable>
+//             ))}
+//             {connection.length
+//               ? connection.map((items) => (
+//                   <React.Fragment key={`${items.start}-${items.end}`}>
+//                     <div
+//                       className="line"
+//                       style={{
+//                         position: "absolute",
+//                         top: document.getElementById(items.start).offsetTop + 15,
+//                         left: document.getElementById(items.start).offsetLeft + 50,
+//                         width: document.getElementById(items.end).offsetLeft - document.getElementById(items.start).offsetLeft,
+//                       }}
+//                     ></div>
+//                     <Xarrow
+//                       key={`${items.start.x}-${items.start.y}-${items.end.x}-${items.end.y}`}
+//                       start={items.start}
+//                       end={items.end}
+//                       labels={
+//                         <i
+//                           className="fas fa-times"
+//                           style={{ cursor: "pointer" }}
+//                           onClick={() => removeConnection(items)}
+//                         ></i>
+//                       }
+//                       startAnchor="auto"
+//                     />
+//                   </React.Fragment>
+//                 ))
+//               : ''}
+//           </Xwrapper>
+//         </div>
+//       </>
+//     );
+//   };
+  
+//   export default MatchTheFollowing;

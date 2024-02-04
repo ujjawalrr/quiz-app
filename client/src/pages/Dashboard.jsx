@@ -3,6 +3,8 @@ import { FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { GiStarFormation } from "react-icons/gi";
+import { IoStarOutline } from "react-icons/io5";
+import { IoStarSharp } from "react-icons/io5";
 import StatsComponent from "../components/StatsComponent";
 import toasty from "../utils/Toast";
 
@@ -17,69 +19,71 @@ const Dashboard = () => {
   useEffect(() => {
     const loadPerformers = async () => {
       try {
-        const response = await fetch('/api/performer?sort=marks')
+        const response = await fetch("/api/performer?sort=marks");
         if (!response.ok) {
-          console.log('Error getting other users data');
+          console.log("Error getting other users data");
         }
         const data = await response.json();
         setAppearedUsers(data);
-
       } catch (error) {
-        console.log('Error in getting other users data');
+        console.log("Error in getting other users data");
       }
-    }
+    };
     loadPerformers();
   }, []);
 
   useEffect(() => {
-    setTopPerformers(appearedUsers.slice(0, 3))
+    setTopPerformers(appearedUsers.slice(0, 3));
   }, [appearedUsers]);
 
-
-  useEffect(() => {
-    if (selectedStars) {
-      const timeoutId = setTimeout(() => {
-        setShowMessage(false);
-      }, 2000);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [selectedStars]);
+  // useEffect(() => {
+  //   if (selectedStars) {
+  //     const timeoutId = setTimeout(() => {
+  //       setShowMessage(false);
+  //     }, 2000);
+  //     return () => clearTimeout(timeoutId);
+  //   }
+  // }, [selectedStars]);
 
   const handleStarClick = (stars) => {
     const handleSubmit = async () => {
       try {
-        const res = await fetch(`/api/performer/feedback/${currentUser._id}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({feedback: selectedStars}),
-          }
-        );
+        const res = await fetch(`/api/performer/feedback/${currentUser._id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ feedback: selectedStars }),
+        });
         const data = await res.json();
         if (data.success === false) {
-          toasty(data.message, "error")
+          toasty(data.message, "error");
           // dispatch(loginFailure(data.message));
           return;
         }
-        console.log(data)
-        toasty("Feedback Successful!", "success")
+        console.log(data);
+        toasty("Feedback Successful!", "success");
         // dispatch(loginSuccess(data));
         setShowMessage(true);
       } catch (error) {
-        console.log(error)
-        toasty(error.message, "error")
+        console.log(error);
+        toasty(error.message, "error");
         // dispatch(loginFailure(error.message));
       }
-    }
+    };
     handleSubmit();
     setSelectedStars(stars);
   };
 
+  const getMessage = () => {
+    return showMessage
+      ? `Thank you for providing ${selectedStars} stars! Your feedback is valuable.`
+      : "Your feedback will help us improve your test experience";
+  };
+
   useEffect(() => {
     // console.log(selectedStars)
-  }, [selectedStars])
+  }, [selectedStars]);
 
   return (
     <div>
@@ -102,7 +106,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="mx-auto my-8">
+        <div className="mx-auto my-8 text-center">
           <h2 className="text-3xl font-semibold mb-4">Overview</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -130,7 +134,9 @@ const Dashboard = () => {
             <div className="bg-white p-4 rounded-md shadow-md">
               <h3 className="text-lg font-semibold mb-2">Unanswered</h3>
               <p className="text-2xl font-bold text-gray-700">
-                {checkedQuestions.totalQuestions - checkedQuestions.correctQuestions - checkedQuestions.incorrectQuestions}
+                {checkedQuestions.totalQuestions -
+                  checkedQuestions.correctQuestions -
+                  checkedQuestions.incorrectQuestions}
               </p>
             </div>
           </div>
@@ -138,21 +144,25 @@ const Dashboard = () => {
 
         <div className="mx-auto my-2">
           <div className="text-center">
-            <Link to='/solutions' className="bg-gradient-to-r from-orange-500 via-orange-300 to-yellow-300 text-white py-2 px-4 mt-2 rounded-md">
+            <Link
+              to="/solutions"
+              className="bg-gradient-to-r from-orange-500 via-orange-300 to-yellow-300 text-white py-2 px-4 mt-2 rounded-md"
+            >
               View Solutions
             </Link>
           </div>
         </div>
 
         <div className="bg-gray-100 min-h-[200px] p-8 rounded-md shadow-md  mx-auto my-8">
-          {appearedUsers && appearedUsers.length > 0 &&
+          {appearedUsers && appearedUsers.length > 0 && (
             <StatsComponent appearedUsers={appearedUsers} />
-          }
+          )}
         </div>
 
         <div className="bg-gray-100 p-8 rounded-md shadow-md  mx-auto my-8">
           <h2 className="text-3xl flex justify-center items-center gap-3 font-semibold mb-4 text-center text-orange-500">
-            <GiStarFormation color='#eecf1e' /> Top Performers <GiStarFormation color='#eecf1e' />
+            <GiStarFormation color="#eecf1e" /> Top Performers{" "}
+            <GiStarFormation color="#eecf1e" />
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -170,7 +180,10 @@ const Dashboard = () => {
                   <div
                     className="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-500 to-blue-500 rounded"
                     style={{
-                      width: `${(performer.marks / checkedQuestions.totalQuestions) * 100}%`,
+                      width: `${
+                        (performer.marks / checkedQuestions.totalQuestions) *
+                        100
+                      }%`,
                     }}
                   ></div>
                 </div>
@@ -181,9 +194,7 @@ const Dashboard = () => {
 
         <div className="bg-gray-100 p-8 rounded-md shadow-md  mx-auto my-8 text-center">
           <h2 className="text-3xl font-bold mb-2">How was your Experience?</h2>
-          <p className="mb-4">
-            Your feedback will help us improve your test experience
-          </p>
+          <p className="mb-4">{getMessage()}</p>
 
           <div className="flex items-center justify-center space-x-2">
             {[1, 2, 3, 4, 5].map((stars) => (
@@ -192,17 +203,14 @@ const Dashboard = () => {
                 onClick={() => handleStarClick(stars)}
                 className="text-xl focus:outline-none text-black-800"
               >
-                {stars <= selectedStars ? "⭐" : "☆"}
+                {stars <= selectedStars ? (
+                  <IoStarSharp className="text-yellow-500" />
+                ) : (
+                  <IoStarOutline />
+                )}
               </button>
             ))}
           </div>
-
-          {showMessage && (
-            <p className="mt-4 text-gray-700">
-              Thank you for providing {selectedStars} stars! Your feedback is
-              valuable.
-            </p>
-          )}
         </div>
       </div>
     </div>
