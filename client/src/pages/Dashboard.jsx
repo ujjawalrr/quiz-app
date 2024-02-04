@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
@@ -13,7 +13,7 @@ const Dashboard = () => {
   const [correctQuestions, setCorrectQuestions] = useState(0);
   const [incorrectQuestions, setIncorrectQuestions] = useState(0);
   const [unansweredQuestions, setUnansweredQuestions] = useState(0);
-  const [totalQuestions, setTotalQuestions] = useState(0);
+  const [totalQuestions, setTotalQuestions] = useState(10);
   const { attemptedQuestions, checkedQuestions } = useSelector(
     (state) => state.question
   );
@@ -21,7 +21,7 @@ const Dashboard = () => {
     const loadQuestions = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/question?includeCorrectAns=true`);
+        const res = await fetch(`/api/question`);
         const data = await res.json();
         if (data.success === false) {
           setError(true);
@@ -114,15 +114,36 @@ const Dashboard = () => {
     setShowMessage(true);
   };
 
+  const calculateNormalDistribution = (x, mean, stdDev) => {
+    const exponent = -((x - mean) ** 2) / (2 * stdDev ** 2);
+    return (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(exponent);
+  };
+
+  const generateNormalDistributionData = () => {
+    const dataPoints = appearedUsers.map((user) => user.marks);
+    const mean =
+      dataPoints.reduce((acc, value) => acc + value, 0) / dataPoints.length;
+    const stdDev = Math.sqrt(
+      dataPoints.reduce((acc, value) => acc + (value - mean) ** 2, 0) /
+        dataPoints.length
+    );
+
+    const distributionData = [];
+    for (let i = 0; i <= 10; i += 0.1) {
+      distributionData.push(calculateNormalDistribution(i, mean, stdDev));
+    }
+
+    return distributionData;
+  };
+
   const data = {
-    labels: ["Your Rank"],
+    labels: Array.from({ length: 101 }, (_, i) => i * 0.1),
     datasets: [
       {
-        label: "User Rank",
-        data: [userRank],
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
+        label: "Normal Distribution",
+        data: generateNormalDistributionData(),
+        fill: false,
+        borderColor: "rgba(75, 192, 192, 0.6)",
       },
     ],
   };
@@ -131,10 +152,26 @@ const Dashboard = () => {
     scales: {
       y: {
         beginAtZero: true,
-        max: totalUsers,
       },
     },
   };
+
+  useEffect(() => {
+    const canvas = document.getElementById("statsChart");
+    const ctx = canvas.getContext("2d");
+
+    const user = appearedUsers.find((user) => user.name === "Ujj");
+    if (user) {
+      const xPos = (user.marks / 10) * canvas.width;
+
+      ctx.beginPath();
+      ctx.moveTo(xPos, 0);
+      ctx.lineTo(xPos, canvas.height);
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+  }, [appearedUsers]);
 
   const topPerformers = appearedUsers
     .sort((a, b) => b.marks - a.marks)
@@ -207,7 +244,7 @@ const Dashboard = () => {
 
         <div className="flex">
           <div className="w-4/5 pr-4">
-            <Bar data={data} options={options} />
+            <Line id="statsChart" data={data} options={options} />
           </div>
 
           <div className="w-1/5">
@@ -232,7 +269,7 @@ const Dashboard = () => {
               <div className="absolute top-0 right-0 bg-gradient-to-r from-orange-500 via-orange-300 to-yellow-300 text-white px-2 py-1 rounded-tl-md rounded-br-md">
                 <span className="font-bold text-lg">Rank #{index + 1}</span>
               </div>
-              <h3 className="text-lg font-semibold mb-2">{`Name: ${performer.name}`}</h3>
+              <h3 className="text-lg font-semibold mb-2 mt-4 break-words">{`Name: ${performer.name}`}</h3>
               <p className="text-2xl font-bold text-indigo-600">{`Marks Obtained: ${performer.marks} / ${totalQuestions}`}</p>
               <div className="relative mt-4 h-4 bg-gray-300 rounded overflow-hidden">
                 <div
