@@ -8,7 +8,7 @@ import { ToastContainer } from "react-toastify"
 import ResetPassword from "./pages/ResetPassword"
 import Solutions from "./pages/Solutions"
 import Test from "./pages/Test"
-import TestAgain from "./pages/TestAgain"
+// import TestAgain from "./pages/TestAgain"
 import MatchTheFollowing from "./components/MatchTheColumns1"
 
 const App = () => {
@@ -27,8 +27,8 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/solutions" element={<Solutions />} />
         <Route path="/test" element={<Test />} />
-        <Route path="/testagain" element={<TestAgain />} />
-        <Route path="/match" element={<MatchTheFollowing />} />
+        {/* <Route path="/testagain" element={<TestAgain />} /> */}
+        {/* <Route path="/match" element={<MatchTheFollowing />} /> */}
         <Route path="/reset/:token" element={<ResetPassword />} />
       </Routes>
     </BrowserRouter>
