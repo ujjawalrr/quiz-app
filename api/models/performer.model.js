@@ -12,6 +12,18 @@ const performerSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    correctQuestions: {
+        type: Number,
+        required: true
+    },
+    incorrectQuestions: {
+        type: Number,
+        required: true
+    },
+    totalQuestions: {
+        type: Number,
+        required: true
+    },
     evaluatedQuestions: {
         type: Object,
         required: true

@@ -34,14 +34,14 @@ const FillInTheBlanks = ({ question, questionNumber, disabled }) => {
                   <input disabled={disabled} type="number"
                     className={`p-2 border-b-2 w-[80px] xs:w-[160px] border-black transition-colors duration-500 ease-in-out focus:outline-none focus:bg-slate-300 
                 ${(!disabled && data[`${question._id}_${subQuestion._id}`] && data[`${question._id}_${subQuestion._id}`] != '' && data[`${question._id}_${subQuestion._id}`] != undefined) ? 'bg-yellow-500 text-white focus:text-black' :
-                        (disabled && data[`${subQuestion._id}`] && data[`${subQuestion._id}`].markedAns == subQuestion.correctAns) ? 'bg-green-500 text-white focus:text-black' :
-                          (disabled && data[`${subQuestion._id}`] && data[`${subQuestion._id}`].markedAns != subQuestion.correctAns) ? 'bg-red-500 text-white focus:text-black' :
+                        (disabled && data.evaluatedQuestions[`${subQuestion._id}`] && data.evaluatedQuestions[`${subQuestion._id}`].markedAns == subQuestion.correctAns) ? 'bg-green-500 text-white focus:text-black' :
+                          (disabled && data.evaluatedQuestions[`${subQuestion._id}`] && data.evaluatedQuestions[`${subQuestion._id}`].markedAns != subQuestion.correctAns) ? 'bg-red-500 text-white focus:text-black' :
                             'bg-slate-200'
                       }`}
-                    name={`${question._id}_${subQuestion._id}`} value={(!disabled && data[`${question._id}_${subQuestion._id}`]) ? data[`${question._id}_${subQuestion._id}`] : (disabled && data[`${subQuestion._id}`]) ? data[`${subQuestion._id}`].markedAns : ''} id={subQuestion._id} onChange={handleChange} />
-                        {(disabled && data[`${subQuestion._id}`] && data[`${subQuestion._id}`].markedAns == subQuestion.correctAns) && <FaCheck color='green' className='ml-2' /> }
-                        {(disabled && data[`${subQuestion._id}`] && data[`${subQuestion._id}`].markedAns != subQuestion.correctAns) && <ImCross color='red' className='ml-2' /> }
-                        {/* {(disabled && !data[`${subQuestion._id}`]) && <MdExposureZero color='yellow' fontSize='30px' /> } */}
+                    name={`${question._id}_${subQuestion._id}`} value={(!disabled && data[`${question._id}_${subQuestion._id}`]) ? data[`${question._id}_${subQuestion._id}`] : (disabled && data.evaluatedQuestions[`${subQuestion._id}`]) ? data.evaluatedQuestions[`${subQuestion._id}`].markedAns : ''} id={subQuestion._id} onChange={handleChange} />
+                        {(disabled && data.evaluatedQuestions[`${subQuestion._id}`] && data.evaluatedQuestions[`${subQuestion._id}`].markedAns == subQuestion.correctAns) && <FaCheck color='green' className='ml-2' /> }
+                        {(disabled && data.evaluatedQuestions[`${subQuestion._id}`] && data.evaluatedQuestions[`${subQuestion._id}`].markedAns != subQuestion.correctAns) && <ImCross color='red' className='ml-2' /> }
+                        {/* {(disabled && !data.evaluatedQuestions[`${subQuestion._id}`]) && <MdExposureZero color='yellow' fontSize='30px' /> } */}
                     
                 </div>
                 <div className='text-slate-600'>
@@ -55,17 +55,17 @@ const FillInTheBlanks = ({ question, questionNumber, disabled }) => {
                   <div>
                     <div className='font-semibold'>Correct Answer: {subQuestion.correctAns}</div>
                     <div>
-                      {data[`${subQuestion._id}`] && data[`${subQuestion._id}`].markedAns == subQuestion.correctAns &&
+                      {data.evaluatedQuestions[`${subQuestion._id}`] && data.evaluatedQuestions[`${subQuestion._id}`].markedAns == subQuestion.correctAns &&
                         <p className='text-green-600'>
                           Your answer is correct.
                         </p>
                       }
-                      {data[`${subQuestion._id}`] && data[`${subQuestion._id}`].markedAns != subQuestion.correctAns &&
+                      {data.evaluatedQuestions[`${subQuestion._id}`] && data.evaluatedQuestions[`${subQuestion._id}`].markedAns != subQuestion.correctAns &&
                         <p className='text-red-600'>
                           Your answer is incorrect.
                         </p>
                       }
-                      {!data[`${subQuestion._id}`] &&
+                      {!data.evaluatedQuestions[`${subQuestion._id}`] &&
                         <p className='text-slate-600'>
                           You haven't attempted this question.
                         </p>

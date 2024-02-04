@@ -18,7 +18,7 @@ export const getPerformers = async (req, res, next) => {
 
         const order = req.query.order || 'desc';
 
-        const performers = await Performer.find({}).sort(
+        const performers = await Performer.find({}, 'name marks').sort(
             {[sort]: order}
         ).limit(limit);
 

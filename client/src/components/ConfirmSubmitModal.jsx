@@ -51,18 +51,26 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
             return -1;
         }
     }
-    const calculateMarks = (checkedQuestionsObj)=>{
+    const calculateData = (checkedQuestionsObj)=>{
         let marks = 0;
+        let correctQuestions = 0;
+        let incorrectQuestions = 0;
         Object.entries(checkedQuestionsObj).forEach(([key, value]) => {
             if(value.marks != undefined){
                 marks += parseInt(value.marks);
             }
+            if(value.status == true){
+                correctQuestions++;
+            }
+            if(value.status == false){
+                incorrectQuestions++;
+            }
         });
-        return marks;
+        return {marks, correctQuestions, incorrectQuestions};
     }
     const storeCheckedQuestions = async (checkedQuestionsObj) => {
         try {
-            let marks =  calculateMarks(checkedQuestionsObj);
+            let {marks, correctQuestions, incorrectQuestions} =  calculateData(checkedQuestionsObj);
             const response = await fetch('/api/performer', {
                 method: 'POST',
                 headers: {
@@ -72,21 +80,24 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
                     {
                         userId: currentUser._id,
                         name: currentUser.name,
-                        marks: marks,
-                        evaluatedQuestions: checkedQuestionsObj
+                        evaluatedQuestions: checkedQuestionsObj,
+                        marks, correctQuestions, incorrectQuestions, totalQuestions
                     }
                 ),
             });
 
             if (!response.ok) {
-                // throw new Error('Failed to store checked questions');
                 toasty('Failed to store checked questions', 'error');
             }
 
-            // const data = await response.json();
-
+            const data = await response.json();
+            dispatch(updateCheckedQuestions(data));
+            dispatch(updateAttemptedQuestions({}));
+            setEvaluating(false);
+            navigate('/dashboard');
         } catch (error) {
             toasty('Error storing checked questions', 'error');
+            setEvaluating(false);
         }
     };
 
@@ -108,12 +119,7 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
                     };
                 }
             }));
-            console.log(checkedQuestionsObj);
-            dispatch(updateCheckedQuestions(checkedQuestionsObj));
-            dispatch(updateAttemptedQuestions({}));
             await storeCheckedQuestions(checkedQuestionsObj);
-            setEvaluating(false);
-            navigate('/dashboard');
         } catch (error) {
             setEvaluating(false);
             console.error("Error occurred while checking solutions: ", error);
@@ -140,7 +146,7 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
                                 You have attempted {Object.keys(attemptedQuestions).length}/{totalQuestions} questions.
                             </p>
                             <div className="py-2 mt-2">
-                                You have attempted {Object.keys(attemptedQuestions).length}/{totalQuestions} questions.
+                                Once submitted, you won't be able to edit your answers.
                             </div>
                             <div className='flex justify-between align-items-center'>
                                 <button disabled={evaluating} onClick={handleClose} className="mt-2 py-2 px-4 bg-[#4477a6] text-white rounded-md hover:opacity-95 disabled:opacity-80">Cancel</button>
