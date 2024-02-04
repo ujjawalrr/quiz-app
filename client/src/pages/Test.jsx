@@ -1,43 +1,51 @@
-import React from 'react';
-import NormalDistributionGraph from '../components/NormalDistributionGraph';
+import React, { useCallback, useState } from 'react';
+import ReactFlow, { useNodesState, useEdgesState, addEdge } from 'reactflow';
 
-const Test = () => {
-  const appearedUsers = [
-    { marks: 9, name: "Ujjawal" },
-    { marks: 8, name: "awal" },
-    { marks: 3, name: "al" },
-    { marks: 10, name: "al" },
-    { marks: 0, name: "ali" },
-    { marks: 2, name: "alje" },
-    { marks: 3, name: "alfe" },
-    { marks: 4, name: "aleff" },
-  ];
+import 'reactflow/dist/style.css';
 
-  // Sort users by marks in descending order
-  const sortedUsers = appearedUsers.slice().sort((a, b) => b.marks - a.marks);
 
-  // Calculate my marks
-  const myMarks = 7;
+export default function Test() {
+  const initialNodes=[
+    { id: 'q1', sourcePosition: 'right', position: { x: 100, y: 100 }, data: { label: 'Question 1' }, draggable: false },
+    { id: 'q2', sourcePosition: 'right', position: { x: 100, y: 200 }, data: { label: 'Question 2' }, draggable: false },
+    { id: 'q3', sourcePosition: 'right', position: { x: 100, y: 300 }, data: { label: 'Question 3' }, draggable: false },
+    { id: 'q4', sourcePosition: 'right', position: { x: 100, y: 400 }, data: { label: 'Question 4' }, draggable: false },
+    { id: 'o1', targetPosition: 'left', sourcePosition: 'top', position: { x: 300, y: 100 }, data: { label: 'Option 1' }, draggable: false },
+    { id: 'o2', targetPosition: 'left', sourcePosition: 'top', position: { x: 300, y: 200 }, data: { label: 'Option 2' }, draggable: false },
+    { id: 'o3', targetPosition: 'left', sourcePosition: 'top', position: { x: 300, y: 300 }, data: { label: 'Option 3' }, draggable: false },
+    { id: 'o4', targetPosition: 'left', sourcePosition: 'top', position: { x: 300, y: 400 }, data: { label: 'Option 4' }, draggable: false },
+  ]
 
-  // Calculate my rank
-  const myRank = sortedUsers.filter(user => user.marks > myMarks).length + 1;
+  const initialEdges = [
+    { id: 'eq1-o2', source: 'q1', target: 'o2' }
+  ]
 
-  // Calculate mean and standard deviation
-  const mean = appearedUsers.reduce((sum, user) => sum + user.marks, 0) / appearedUsers.length;
-  const squaredDeviations = appearedUsers.reduce((sum, user) => sum + Math.pow(user.marks - mean, 2), 0);
-  const stdDev = Math.sqrt(squaredDeviations / appearedUsers.length);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  // Define the range for the x-axis (marks)
-  const range = [...Array(11).keys()];
+  const onConnect = (params)=>{
+    console.log(params, "Params17")
+    setEdges([...initialEdges, {id: `e${params.source}-${params.target}`, source: params.source, target: params.target}])
+  }
+  console.log(initialEdges)
+  // const onConnect = useCallback((params) => {
+  //   setInitialEdges([...initialEdges, {id: 'eq1-o2', source: params.source, target: params.target}])
+  //   console.log(params, "Params17")
+  //   setEdges((eds) => {
+  //     console.log(eds, 'eds 19')
+  //     addEdge(params, eds)
+  //   })
+  // }, [setEdges],);
 
   return (
-    <div>
-      <h1>Quiz Results</h1>
-      <NormalDistributionGraph mean={mean} stdDev={stdDev} range={range} myMarks={myMarks} myRank={myRank} />
-      <p>My Marks: {myMarks}</p>
-      <p>My Rank: {myRank}</p>
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+      />
     </div>
   );
-};
-
-export default Test;
+}
