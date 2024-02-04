@@ -12,7 +12,7 @@ const GuestForm = () => {
     const navigate = useNavigate();
     const [guestData, setGuestData] = useState({
         name: '',
-        _id: 'guest'
+        _id: 'guest' + Math.random().toString(36).slice(-8)
     })
     const handleChange = (e) => {
         setGuestData({ ...guestData, [e.target.id]: e.target.value })

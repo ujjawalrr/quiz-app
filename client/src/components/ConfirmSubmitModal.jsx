@@ -7,7 +7,9 @@ import { updateAttemptedQuestions, updateCheckedQuestions } from '../redux/quest
 const ConfirmSubmitModal = ({ totalQuestions }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { currentUser } = useSelector(state => state.user)
     const { attemptedQuestions, checkedQuestions } = useSelector(state => state.question)
+    const [attemptedQuestionsState, setAttemptedQuestionsState] = useState(attemptedQuestions);
     const [countSolved, setCountSolved] = useState(0);
     const [evaluating, setEvaluating] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -19,11 +21,13 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
                 attemptedQuestionsObj[key] = value;
             }
         });
-        dispatch(updateAttemptedQuestions(attemptedQuestionsObj));
-        setCountSolved(Object.keys(attemptedQuestionsObj).length);
-        console.log(attemptedQuestions, "attempted question");
+        setAttemptedQuestionsState(attemptedQuestionsObj);
         setShowModal(true);
     };
+    useEffect(() => {
+        dispatch(updateAttemptedQuestions(attemptedQuestionsState));
+        setCountSolved(Object.keys(attemptedQuestions).length);
+    }, [attemptedQuestionsState])
 
     const checkSolution = async (questionId, subQuestionId, markedAns) => {
         try {
@@ -47,6 +51,44 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
             return -1;
         }
     }
+    const calculateMarks = (checkedQuestionsObj)=>{
+        let marks = 0;
+        Object.entries(checkedQuestionsObj).forEach(([key, value]) => {
+            if(value.marks != undefined){
+                marks += parseInt(value.marks);
+            }
+        });
+        return marks;
+    }
+    const storeCheckedQuestions = async (checkedQuestionsObj) => {
+        try {
+            let marks =  calculateMarks(checkedQuestionsObj);
+            const response = await fetch('/api/performer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(
+                    {
+                        userId: currentUser._id,
+                        name: currentUser.name,
+                        marks: marks,
+                        evaluatedQuestions: checkedQuestionsObj
+                    }
+                ),
+            });
+
+            if (!response.ok) {
+                // throw new Error('Failed to store checked questions');
+                toasty('Failed to store checked questions', 'error');
+            }
+
+            // const data = await response.json();
+
+        } catch (error) {
+            toasty('Error storing checked questions', 'error');
+        }
+    };
 
     const handleSubmit = async () => {
         setEvaluating(true);
@@ -58,20 +100,24 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
                 if (value !== '') {
                     let checkSol = await checkSolution(parts[0], parts[1], value);
                     checkedQuestionsObj[subQuestionId] = {
-                        status: checkSol,
+                        status: checkSol.status,
                         markedAns: value,
                         questionId: parts[0],
-                        subQuestionId: subQuestionId
+                        subQuestionId: subQuestionId,
+                        marks: checkSol.marks
                     };
                 }
             }));
+            console.log(checkedQuestionsObj);
             dispatch(updateCheckedQuestions(checkedQuestionsObj));
-            dispatch(updateAttemptedQuestions('false'));
+            dispatch(updateAttemptedQuestions({}));
+            await storeCheckedQuestions(checkedQuestionsObj);
+            setEvaluating(false);
+            navigate('/dashboard');
         } catch (error) {
+            setEvaluating(false);
             console.error("Error occurred while checking solutions: ", error);
         }
-        setEvaluating(false);
-        navigate('/dashboard');
     }
 
     return (

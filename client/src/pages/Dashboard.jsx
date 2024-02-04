@@ -3,6 +3,7 @@ import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import { FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -195,9 +196,9 @@ const Dashboard = () => {
 
       <div className="w-4/5 mx-auto my-2">
         <div className="text-center">
-          <button className="bg-gradient-to-r from-orange-500 via-orange-300 to-yellow-300 text-white py-2 px-4 mt-2 rounded-md">
+          <Link to='/solutions' className="bg-gradient-to-r from-orange-500 via-orange-300 to-yellow-300 text-white py-2 px-4 mt-2 rounded-md">
             View Solutions
-          </button>
+          </Link>
         </div>
       </div>
 

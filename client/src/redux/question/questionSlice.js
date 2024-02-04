@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    attemptedQuestions: false,
-    checkedQuestions: false,
+    attemptedQuestions: {},
+    checkedQuestions: {},
     error: false,
     loading: false,
 };

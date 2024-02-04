@@ -32,8 +32,8 @@ const MCQ = ({ question, questionNumber, disabled }) => {
                     <div key={optionIndex} className='relative'>
                       <label htmlFor={`${subQuestion._id}${optionIndex + 1}`}
                         className={`cursor-pointer shadow-md z-0 text-white text-xl min-w-10 min-h-10 xs:text-2xl xs:min-w-16 xs:min-h-16 tb:text-3xl tb:min-w-20 tb:min-h-20 flex justify-center items-center transition-all duration-700 ease-in-out hover:opacity-90 
-                        ${(!disabled && data[`${question._id}_${subQuestion._id}`] == option) ? 'bg-yellow-500 transform scale-125 rounded-full' :
-                            (!disabled && data[`${question._id}_${subQuestion._id}`] != option) ? 'bg-[#ef7931] rounded-lg hover:scale-105' :
+                        ${(!disabled && data[`${question._id}_${subQuestion._id}`] && data[`${question._id}_${subQuestion._id}`] == option) ? 'bg-yellow-500 transform scale-125 rounded-full' :
+                            (!disabled && data[`${question._id}_${subQuestion._id}`] && data[`${question._id}_${subQuestion._id}`] != option) ? 'bg-[#ef7931] rounded-lg hover:scale-105' :
                               (disabled && data[`${subQuestion._id}`] && data[`${subQuestion._id}`].markedAns == option && subQuestion.correctAns == option) ? 'bg-green-500 transform scale-125 rounded-full' :
                                 (disabled && data[`${subQuestion._id}`] && data[`${subQuestion._id}`].markedAns == option && subQuestion.correctAns != option) ? 'bg-red-500 transform scale-125 rounded-full' :
                                   (disabled && data[`${subQuestion._id}`] && data[`${subQuestion._id}`].markedAns != option && subQuestion.correctAns == option) ? 'bg-green-500 transform scale-115 rounded-lg' :

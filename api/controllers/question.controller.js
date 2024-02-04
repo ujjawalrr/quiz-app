@@ -102,10 +102,10 @@ export const evaluateQuestion = async (req, res, next) => {
             return next(errorHandler(404, 'subQuestion not found!'));
         }
         if (markedAns == subQuestion.correctAns) {
-            return res.status(200).json(true);
+            return res.status(200).json({status: true, marks: subQuestion.marks});
         }
 
-        res.status(200).json(false);
+        res.status(200).json({status: false});
     } catch (error) {
         next(error);
     }
