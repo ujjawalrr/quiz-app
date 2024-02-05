@@ -58,17 +58,12 @@ const Dashboard = () => {
         const data = await res.json();
         if (data.success === false) {
           toasty(data.message, "error");
-          // dispatch(loginFailure(data.message));
           return;
         }
-        console.log(data);
-        toasty("Feedback Successful!", "success");
-        // dispatch(loginSuccess(data));
+        toasty("Feedback Recorded!", "success");
         setShowMessage(true);
       } catch (error) {
-        console.log(error);
-        toasty(error.message, "error");
-        // dispatch(loginFailure(error.message));
+        console.log("Error in feedback!");
       }
     };
     handleSubmit();
@@ -81,14 +76,10 @@ const Dashboard = () => {
       : "Your feedback will help us improve your test experience";
   };
 
-  useEffect(() => {
-    // console.log(selectedStars)
-  }, [selectedStars]);
-
   return (
     <div>
       <div className="flex bg-gradient-to-r from-yellow-400 to-yellow-600 items-center p-3">
-        <h1 className="text-3xl font-extrabold text-white ml-6 mr-4 transform transition-transform hover:scale-105">
+        <h1 className="text-2xl font-semibold text-white ml-6 mr-4">
           Dashboard
         </h1>
         <div className="ml-auto mr-4">
