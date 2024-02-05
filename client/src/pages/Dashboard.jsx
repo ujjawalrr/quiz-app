@@ -35,16 +35,6 @@ const Dashboard = () => {
   useEffect(() => {
     setTopPerformers(appearedUsers.slice(0, 3));
   }, [appearedUsers]);
-
-  // useEffect(() => {
-  //   if (selectedStars) {
-  //     const timeoutId = setTimeout(() => {
-  //       setShowMessage(false);
-  //     }, 2000);
-  //     return () => clearTimeout(timeoutId);
-  //   }
-  // }, [selectedStars]);
-
   const handleStarClick = (stars) => {
     const handleSubmit = async () => {
       try {

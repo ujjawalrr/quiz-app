@@ -29,7 +29,7 @@ const GuestForm = () => {
                 <label htmlFor="name" className="w-1/4">Name:</label>
                 <input placeholder="Enter Your Name" id="name" type="text" onChange={handleChange} className="w-3/4 px-3 py-2 border border-black rounded-md" required />
             </div>
-            <button type="submit" disabled={loading} className="w-full py-2 mt-2 bg-[#fdd341] text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Starting...' : 'Start Quiz'}</button>
+            <button type="submit" disabled={loading} className="w-full py-2 mt-2 bg-red-500 text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Starting...' : 'Start Quiz'}</button>
         </form>
     );
 };
