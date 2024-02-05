@@ -31,8 +31,6 @@ const Solutions = () => {
         }
         loadSolutions();
     }, []);
-    console.log(solutions)
-    console.log(checkedQuestions);
     return (
         <div className='container-fluid'>
             {checkedQuestions && checkedQuestions != undefined &&

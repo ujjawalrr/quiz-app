@@ -50,9 +50,9 @@ const Quiz = () => {
         <div className='h-full w-full'>
           <img src={whiteboard} className='w-full min-h-[560px]' alt="" />
         </div>
-        <div className='py-9 px-6 sm:px-8 md:px-12 absolute top-0 w-full h-full flex items-center justify-center'>
+        <div className='handwriting py-9 px-6 sm:px-8 md:px-12 absolute top-0 w-full h-full flex items-center justify-center'>
           {questions && questions.length > 0 &&
-            <div className='w-full h-full flex flex-col justify-between'>
+            <div className='relative w-full h-full flex flex-col justify-between'>
               {questions.map((question, index) =>
                 <React.Fragment key={question._id}>
                   {question.type == 'mcq' && activeTab == '1' && <MCQ question={question} questionNumber={index + 1} disabled={false} />}
@@ -61,7 +61,7 @@ const Quiz = () => {
                 </React.Fragment>
               )}
 
-              <div className={`xs:px-10 pb-14 flex items-center w-full ${activeTab == '1' ? 'justify-end' : 'justify-between'}`}>
+              <div className={`xs:px-10 absolute bottom-14 flex items-center w-full ${activeTab == '1' ? 'justify-end' : 'justify-between'}`}>
                 {activeTab > '1' && <button onClick={() => openTab(parseInt(activeTab) - 1)} className='bg-[#fdd341] text-white py-2 px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Previous</button>}
                 {activeTab < questions.length.toString() && <button onClick={() => openTab(parseInt(activeTab) + 1)} className='bg-[#fdd341] text-white py-2 px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Next</button>}
                 {activeTab == questions.length && <ConfirmSubmitModal totalQuestions={totalQuestions} />}

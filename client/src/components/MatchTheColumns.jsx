@@ -1,6 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
+import { updateAttemptedQuestions } from '../redux/question/questionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import ReactFlow, { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow';
+import 'reactflow/dist/style.css';
 
 const MatchTheColumns = ({ question, questionNumber, disabled }) => {
+  let initialNodes = []
+  let initialEdges = [];
+  const { attemptedQuestions, checkedQuestions } = useSelector(state => state.question)
+  const dispatch = useDispatch()
+  const [data, setData] = useState(disabled ? checkedQuestions : attemptedQuestions);
+  const bgColours = ['orange', 'yellow', 'green', 'blue'];
+  const colours = ['white', 'black', 'white', 'white'];
   const [shuffledOptions, setShuffledOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -9,15 +20,15 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
       try {
         setLoading(true);
         const res = await fetch(`/api/question/options/${question._id}`);
-        const data = await res.json();
-        if (data.success === false) {
+        const resData = await res.json();
+        if (resData.success === false) {
           setError(true);
           setLoading(false);
           return;
         }
         setLoading(false);
         setError(false);
-        setShuffledOptions(data);
+        setShuffledOptions(resData);
       } catch (error) {
         setLoading(false);
         setError(true);
@@ -25,12 +36,67 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
     }
     loadOptions();
   }, []);
-  const [data, setData] = useState({});
-  const handleChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+
+  function checkExistense(array, key, value) {
+    return array.find(obj => obj[key] === value);
   }
-  // console.log(data);
-  const colours = ['#ffab56', 'yellow', 'green', 'blue'];
+  const [nodes, setNodes] = useState(initialNodes);
+  const [edges, setEdges] = useState(initialEdges);
+  useEffect(() => {
+    question.subQuestions.map((subQuestion, index) => {
+      initialNodes.push({ id: `${question._id}_${subQuestion._id}`, style: {color: colours[index], backgroundColor: bgColours[index]}, resizing: false, sourcePosition: 'right', position: { x: 0, y: 60 * (index) }, data: { label: subQuestion.question[0] }, draggable: false })
+    })
+    shuffledOptions.map((option, index) => {
+      initialNodes.push({ id: `${option}`, targetPosition: 'left', resizing: false, sourcePosition: 'top', position: { x: 250, y: 60 * (index) }, data: { label: option }, draggable: false })
+    })
+    setNodes(initialNodes);
+  }, [shuffledOptions]);
+  console.log("nodes: ", nodes)
+  console.log("edges: ", edges)
+
+  const onNodesChange = useCallback(
+    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    [setNodes]
+  );
+  const onEdgesChange = useCallback(
+    (changes) => {
+      setEdges((eds) => {
+        applyEdgeChanges(changes, eds)
+      })
+    },
+    [setEdges]
+  );
+  const updateUI = (connection) => {
+    setData({ ...data, [connection.source]: connection.target })
+  }
+  const onConnect = useCallback(
+    (connection) => {
+      setEdges((eds) => {
+        const updatedEdges = addEdge(connection, eds);
+        updateUI(connection);
+        return updatedEdges;
+      });
+    },
+    [setEdges, updateUI]
+  );
+
+  useEffect(() => {
+    dispatch(updateAttemptedQuestions(data));
+    initialEdges = [];
+    if (disabled) {
+      Object.entries(data.evaluatedQuestions).forEach(([key, value]) => {
+        let check = checkExistense(question.subQuestions, '_id', key);
+        if (check != undefined) {
+          initialEdges.push({ id: `e${key}_${value.questionId}-${value.markedAns}`, style: { stroke: value.status ? '#00ff00' : '#ff0000' }, source: `${value.questionId}_${key}`, target: `${value.markedAns}` })
+        }
+      });
+    } else {
+      Object.entries(data).forEach(([key, value]) => {
+        initialEdges.push({ id: `e${key}-${value}`, source: key, target: value });
+      });
+    }
+    setEdges(initialEdges);
+  }, [data, disabled]);
 
   return (<>
     {question && shuffledOptions && shuffledOptions.length > 0 &&
@@ -38,21 +104,30 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
         <h1 className='font-semibold text-2xl text-orange-500'>Question {questionNumber}: Match the Columns</h1>
         <h2 className='text-xl pt-3 pb-1'>{question.title}</h2>
         <div className='flex flex-col max-w-lg mx-auto'>
-
           <div className='flex pb-1 items-center justify-between'>
             <div className='font-semibold mr-3 text-xl xs:text-2xl invisible'>a)</div>
             <div className='flex flex-auto items-center justify-between'>
-              <label className={`text-xl xs:text-2xl w-[105px] sm:w-[140px] text-center text-red-500`} >
+              <label className={`text-xl sm:text-2xl w-[105px] sm:w-[140px] text-center text-red-500`} >
                 Column A
               </label>
-              <label className={`text-xl xs:text-2xl w-[100px] sm:w-[140px] text-center text-gray-500`}>
+              <label className={`text-xl sm:text-2xl w-[100px] sm:w-[140px] text-center text-gray-500`}>
                 Column B
               </label>
             </div>
             <div className='invisible'>(1 Mark)</div>
           </div>
 
-          <div className='flex flex-col gap-3 xs:gap-4'>
+          <div className='flex items-center justify-center w-[350px] xs:w-[450px] sm:w-[500px] h-[250px] md:h-[300px]'>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+            />
+          </div>
+
+          {/* <div className='flex flex-col gap-3 xs:gap-4'>
             {question.subQuestions.map((subQuestion, index) =>
               <div className='flex items-center justify-between' key={subQuestion._id}>
                 <div className='font-semibold mr-1 xs:mr-3 text-xl xs:text-2xl'>{String.fromCharCode(index + 97)})</div>
@@ -70,7 +145,7 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
                 <div className='text-slate-600'>({subQuestion.marks} Mark)</div>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     }

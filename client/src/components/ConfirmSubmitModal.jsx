@@ -30,6 +30,7 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
     }, [attemptedQuestionsState])
 
     const checkSolution = async (questionId, subQuestionId, markedAns) => {
+        console.log("in check sol", questionId, subQuestionId, markedAns)
         try {
             const res = await fetch('/api/question/evaluate',
                 {
