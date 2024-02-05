@@ -7,7 +7,6 @@ import Dashboard from "./pages/Dashboard"
 import { ToastContainer } from "react-toastify"
 import ResetPassword from "./pages/ResetPassword"
 import Solutions from "./pages/Solutions"
-import Test from "./pages/Test"
 
 const App = () => {
   return (
@@ -20,11 +19,9 @@ const App = () => {
         </Route>
         <Route element={<PrivateRoute />}>
           <Route path="/quiz" element={<Quiz />} />
-          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/solutions" element={<Solutions />} />
         </Route>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/solutions" element={<Solutions />} />
-        <Route path="/test" element={<Test />} />
         <Route path="/reset/:token" element={<ResetPassword />} />
       </Routes>
     </BrowserRouter>
