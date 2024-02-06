@@ -128,10 +128,10 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
     }
 
     return (
-        <div>
-            <button onClick={handleShow} className='bg-red-500 text-white py-2 px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Submit Quiz</button>
+        <div className=''>
+            <button onClick={handleShow} className='bg-red-500 text-white py-2 px-3 sm:px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Submit Quiz</button>
             {showModal && (
-                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
+                <div className="font-sans fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
                     <div className="absolute w-full h-full bg-gray-900 opacity-50" onClick={handleClose}></div>
                     <div className="bg-white rounded-lg z-50">
                         <div className="flex justify-between items-center border-b p-3">
@@ -143,7 +143,7 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
                             </button>
                         </div>
                         <div className="p-3">
-                            <p className='text-gray-700'>
+                            <p className=''>
                                 You have attempted {Object.keys(attemptedQuestions).length}/{totalQuestions} questions.
                             </p>
                             <div className="py-2 mt-2">

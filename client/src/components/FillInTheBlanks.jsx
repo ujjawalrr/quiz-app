@@ -20,23 +20,23 @@ const FillInTheBlanks = ({ question, questionNumber, disabled }) => {
   return (<>
     {question &&
       <div>
-        <h1 className='font-semibold text-2xl text-orange-500'>Question {questionNumber}: Fill in the blanks</h1>
-        <h2 className='text-xl pt-3 pb-5'>{question.title}</h2>
+        <h1 className={`text-[22px] sm:text-2xl text-[#e2854f] ${disabled ? 'font-semibold' : ''} `}>Question {questionNumber}: Fill in the blanks</h1>
+        <h2 className={`text-xl sm:text-2xl pt-0 sm:pt-1 md:pt-3 pb-3 md:pb-5 ${disabled ? 'text-black' : 'text-white font-light'} `}>{question.title}</h2>
         <div className='flex flex-col gap-6 max-w-lg mx-auto'>
           {question.subQuestions.map((subQuestion, index) =>
             <div key={subQuestion._id}>
               <div className='flex gap-3 items-center justify-between'>
-                <div className='font-semibold text-2xl'>{String.fromCharCode(index + 97)})</div>
+                <div className='text-xl sm:text-2xl text-[#e2854f]'>{String.fromCharCode(index + 97)})</div>
                 <div className='flex flex-auto items-center'>
-                  <label htmlFor={subQuestion._id} className='text-2xl w-[105px] sm:w-[140px]'>
+                  <label htmlFor={subQuestion._id} className={`text-xl sm:text-2xl w-[105px] sm:w-[140px]  ${disabled ? 'text-black' : 'text-white'} `}>
                     {subQuestion.question[0]}
                   </label>
                   <input disabled={disabled} type="number"
-                    className={`p-2 border-b-2 w-[80px] xs:w-[160px] border-black transition-colors duration-500 ease-in-out focus:outline-none focus:bg-slate-300 
-                ${(!disabled && data[`${question._id}_${subQuestion._id}`] && data[`${question._id}_${subQuestion._id}`] != '' && data[`${question._id}_${subQuestion._id}`] != undefined) ? 'bg-yellow-500 text-white focus:text-black' :
+                    className={`p-1 sm:p-2 border-b-2 w-[80px] xs:w-[160px] border-black transition-colors duration-500 ease-in-out focus:outline-none focus:bg-slate-300 
+                ${(!disabled && data[`${question._id}_${subQuestion._id}`] && data[`${question._id}_${subQuestion._id}`] != '' && data[`${question._id}_${subQuestion._id}`] != undefined) ? 'bg-[#a45d33] text-white focus:text-black' :
                         (disabled && data.evaluatedQuestions[`${subQuestion._id}`] && data.evaluatedQuestions[`${subQuestion._id}`].markedAns == subQuestion.correctAns) ? 'bg-green-500 text-white focus:text-black' :
                           (disabled && data.evaluatedQuestions[`${subQuestion._id}`] && data.evaluatedQuestions[`${subQuestion._id}`].markedAns != subQuestion.correctAns) ? 'bg-red-500 text-white focus:text-black' :
-                            'bg-slate-200'
+                            'bg-slate-300'
                       }`}
                     name={`${question._id}_${subQuestion._id}`} value={(!disabled && data[`${question._id}_${subQuestion._id}`]) ? data[`${question._id}_${subQuestion._id}`] : (disabled && data.evaluatedQuestions[`${subQuestion._id}`]) ? data.evaluatedQuestions[`${subQuestion._id}`].markedAns : ''} id={subQuestion._id} onChange={handleChange} />
                         {(disabled && data.evaluatedQuestions[`${subQuestion._id}`] && data.evaluatedQuestions[`${subQuestion._id}`].markedAns == subQuestion.correctAns) && <FaCheck color='green' className='ml-2' /> }
@@ -44,7 +44,7 @@ const FillInTheBlanks = ({ question, questionNumber, disabled }) => {
                         {/* {(disabled && !data.evaluatedQuestions[`${subQuestion._id}`]) && <MdExposureZero color='yellow' fontSize='30px' /> } */}
                     
                 </div>
-                <div className='text-slate-600'>
+                <div className='text-[#e2854f]'>
                   ({subQuestion.marks} Mark)
                   {/* <FaCheck color='green' />
                   <RxCross2 color='red' /> */}

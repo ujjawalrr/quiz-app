@@ -35,14 +35,14 @@ const Solutions = () => {
     }, []);
     return (
         <div className='container-fluid'>
-            <div className="flex bg-gradient-to-r from-yellow-400 to-yellow-600 items-center p-3">
+            <div className="flex bg-gradient-to-r from-[#d16d2c] to-[#7f340a] items-center p-3">
                 <h1 className="text-2xl font-semibold text-white ml-6 mr-4">
                     Dashboard
                 </h1>
                 <div className="ml-auto mr-4">
                     <div className="flex items-center">
                         <FaUser className="text-white mr-2" />
-                        <span className="text-white">{currentUser.name}</span>
+                        <span className="text-white">Ujjawal</span>
                     </div>
                 </div>
             </div>

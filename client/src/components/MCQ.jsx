@@ -17,22 +17,19 @@ const MCQ = ({ question, questionNumber, disabled }) => {
   return (<>
     {question &&
       <div>
-        <h1 className='font-semibold text-2xl text-orange-500'>Question {questionNumber}: Multiple Choice Questions</h1>
-        <h2 className='text-xl pt-3 pb-5'>
-          {/* <VaraText text={question.title} /> */}
-          {question.title}
-        </h2>
+        <h1 className={`text-[22px] sm:text-2xl text-[#e2854f] ${disabled ? 'font-semibold' : ''} `}>Question {questionNumber}: Multiple Choice Questions</h1>
+        <h2 className={`text-xl sm:text-2xl pt-0 sm:pt-1 md:pt-3 pb-3 md:pb-5 ${disabled ? 'text-black' : 'text-white font-light'} `}>{question.title}</h2>
         <div className='flex flex-col gap-10'>
           {question.subQuestions.map((subQuestion, index) =>
             <div key={subQuestion._id}>
               <div className='flex gap-3 items-center justify-between'>
-                <div className='font-semibold text-xl xs:text-2xl'>{String.fromCharCode(index + 97)})</div>
+              <div className='text-xl sm:text-2xl text-[#e2854f]'>{String.fromCharCode(index + 97)})</div>
                 <div className='flex flex-auto items-center justify-between'>
                   {subQuestion.question.map((option, optionIndex) =>
                     <div key={optionIndex} className='relative'>
                       <label htmlFor={`${subQuestion._id}${optionIndex + 1}`}
                         className={`cursor-pointer shadow-md z-0 text-white text-xl min-w-10 min-h-10 xs:text-2xl xs:min-w-16 xs:min-h-16 tb:text-3xl tb:min-w-20 tb:min-h-20 flex justify-center items-center transition-all duration-700 ease-in-out hover:opacity-90 
-                        ${(!disabled && data[`${question._id}_${subQuestion._id}`] && data[`${question._id}_${subQuestion._id}`] == option) ? 'bg-yellow-500 transform scale-125 rounded-full' :
+                        ${(!disabled && data[`${question._id}_${subQuestion._id}`] && data[`${question._id}_${subQuestion._id}`] == option) ? 'bg-[#a45d33] transform scale-125 rounded-full' :
                             (!disabled && data[`${question._id}_${subQuestion._id}`] && data[`${question._id}_${subQuestion._id}`] != option) ? 'bg-[#ef7931] rounded-lg hover:scale-105' :
                               (disabled && data.evaluatedQuestions[`${subQuestion._id}`] && data.evaluatedQuestions[`${subQuestion._id}`].markedAns == option && subQuestion.correctAns == option) ? 'bg-green-500 transform scale-125 rounded-full' :
                                 (disabled && data.evaluatedQuestions[`${subQuestion._id}`] && data.evaluatedQuestions[`${subQuestion._id}`].markedAns == option && subQuestion.correctAns != option) ? 'bg-red-500 transform scale-125 rounded-full' :
@@ -47,7 +44,11 @@ const MCQ = ({ question, questionNumber, disabled }) => {
                     </div>
                   )}
                 </div>
-                <div className='text-slate-600'>({subQuestion.marks} Mark)</div>
+                <div className='text-[#e2854f]'>
+                  ({subQuestion.marks} Mark)
+                  {/* <FaCheck color='green' />
+                  <RxCross2 color='red' /> */}
+                </div>
               </div>
               {disabled &&
                 <div>

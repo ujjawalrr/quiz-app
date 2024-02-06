@@ -44,3 +44,13 @@ input[type=number] {
 .react-flow__attribution{
     display: none;
 }
+.react-flow__handle.connectionindicator {
+    width: 16px;
+    height: 16px;
+}
+.react-flow__handle-right {
+    right: -20px;
+}
+.react-flow__handle-left {
+    left: -20px;
+}

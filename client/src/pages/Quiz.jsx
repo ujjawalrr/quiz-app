@@ -1,10 +1,11 @@
 import React from 'react'
 import { useEffect, useState } from 'react';
-import whiteboard from '../assets/images/whiteboard.png'
+import whiteboard from '../assets/images/newBg.png'
 import MCQ from '../components/MCQ';
 import MatchTheColumns from '../components/MatchTheColumns';
 import FillInTheBlanks from '../components/FillInTheBlanks';
 import ConfirmSubmitModal from '../components/ConfirmSubmitModal';
+import { FaUser } from 'react-icons/fa';
 
 const Quiz = () => {
   const [questions, setQuestions] = useState([]);
@@ -45,38 +46,52 @@ const Quiz = () => {
     setTotalQuestions(count);
   }, [questions]);
   return (
-    <div className="container-full flex items-center justify-center h-[100vh] bg-gradient-to-b from-[#4477a6] to-[#91a4b5]">
-      <div className='relative w-full sm:w-[600px] md:w-[750px] tb:w-[850px]'>
-        <div className='h-full w-full'>
-          <img src={whiteboard} className='w-full min-h-[560px]' alt="" />
+    <div>
+      <div className="flex bg-gradient-to-r from-[#d16d2c] to-[#7f340a] items-center p-3">
+        <h1 className="text-2xl font-semibold text-white ml-6 mr-4">
+          Dashboard
+        </h1>
+        <div className="ml-auto mr-4">
+          <div className="flex items-center">
+            <FaUser className="text-white mr-2" />
+            <span className="text-white">Ujjawal</span>
+          </div>
         </div>
-        <div className='handwriting py-9 px-6 sm:px-8 md:px-12 absolute top-0 w-full h-full flex items-center justify-center'>
-          {questions && questions.length > 0 &&
-            <div className='relative w-full h-full flex flex-col justify-between'>
-              {questions.map((question, index) =>
-                <React.Fragment key={question._id}>
-                  {question.type == 'mcq' && activeTab == '1' && <MCQ question={question} questionNumber={index + 1} disabled={false} />}
-                  {question.type == 'match' && activeTab == '2' && <MatchTheColumns question={question} questionNumber={index + 1} disabled={false} />}
-                  {question.type == 'fill' && activeTab == '3' && <FillInTheBlanks question={question} questionNumber={index + 1} disabled={false} />}
-                </React.Fragment>
-              )}
+      </div>
+      <div className="container-full flex items-center justify-center h-[calc(100vh-60px)] bg-gradient-to-b from-[#4477a6] to-[#91a4b5]">
+        <div className='relative w-full sm:w-[600px] md:w-[750px] tb:w-[850px] h-[90vh] sm:h-[550px] md:h-[550px]'>
+          <div className='h-full w-full'>
+            <img src={whiteboard} className='w-full h-full' alt="" />
+          </div>
+          <div className='handwriting py-7 md:py-9 px-8 sm:px-8 md:px-12 absolute top-0 w-full h-full flex items-center justify-center'>
+            {questions && questions.length > 0 &&
+              <div className='relative w-full h-full flex flex-col justify-between'>
+                {questions.map((question, index) =>
+                  <React.Fragment key={question._id}>
+                    {question.type == 'mcq' && activeTab == '1' && <MCQ question={question} questionNumber={index + 1} disabled={false} />}
+                    {question.type == 'match' && activeTab == '2' && <MatchTheColumns question={question} questionNumber={index + 1} disabled={false} />}
+                    {question.type == 'fill' && activeTab == '3' && <FillInTheBlanks question={question} questionNumber={index + 1} disabled={false} />}
+                  </React.Fragment>
+                )}
 
-              <div className={`xs:px-10 absolute bottom-14 flex items-center w-full ${activeTab == '1' ? 'justify-end' : 'justify-between'}`}>
-                {activeTab > '1' && <button onClick={() => openTab(parseInt(activeTab) - 1)} className='bg-[#fdd341] text-white py-2 px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Previous</button>}
-                {activeTab < questions.length.toString() && <button onClick={() => openTab(parseInt(activeTab) + 1)} className='bg-[#fdd341] text-white py-2 px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Next</button>}
-                {activeTab == questions.length && <ConfirmSubmitModal totalQuestions={totalQuestions} />}
+                <div className={`px-0 sm:px-32 absolute bottom-[85px] flex items-center w-full ${activeTab == '1' ? 'justify-end' : 'justify-between'}`}>
+                  {activeTab > '1' && <button onClick={() => openTab(parseInt(activeTab) - 1)} className='bg-[#7f340a] text-white py-2 w-20 sm:w-28 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Previous</button>}
+                  {activeTab < questions.length.toString() && <button onClick={() => openTab(parseInt(activeTab) + 1)} className='bg-[#7f340a] text-white py-2 w-20 sm:w-28 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Next</button>}
+                  {activeTab == questions.length && <ConfirmSubmitModal totalQuestions={totalQuestions} />}
+                </div>
               </div>
-            </div>
-          }
-          {loading &&
-            <p className='text-gray-500 text-2xl'>Loading...</p>
-          }
-          {error &&
-            <p className='text-red-500 text-2xl'>Could not get your quiz!</p>
-          }
+            }
+            {loading &&
+              <p className='text-gray-500 text-2xl'>Loading...</p>
+            }
+            {error &&
+              <p className='text-red-500 text-2xl'>Could not get your quiz!</p>
+            }
+          </div>
         </div>
       </div>
     </div>
+
   )
 }
 

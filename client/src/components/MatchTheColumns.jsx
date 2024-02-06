@@ -10,8 +10,8 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
   const { attemptedQuestions, checkedQuestions } = useSelector(state => state.question)
   const dispatch = useDispatch()
   const [data, setData] = useState(disabled ? checkedQuestions : attemptedQuestions);
-  const bgColours = ['orange', 'yellow', 'green', 'blue'];
-  const colours = ['white', 'black', 'white', 'white'];
+  const bgColours = ['orange', '#ea5151', '#3aaf3a', '#4AAAF8'];
+  const colours = ['white', 'white', 'white', 'white'];
   const [shuffledOptions, setShuffledOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -44,7 +44,7 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
   const [edges, setEdges] = useState(initialEdges);
   useEffect(() => {
     question.subQuestions.map((subQuestion, index) => {
-      initialNodes.push({ id: `${question._id}_${subQuestion._id}`, style: {color: colours[index], backgroundColor: bgColours[index]}, resizing: false, sourcePosition: 'right', position: { x: 0, y: 60 * (index) }, data: { label: subQuestion.question[0] }, draggable: false })
+      initialNodes.push({ id: `${question._id}_${subQuestion._id}`, style: { color: colours[index], backgroundColor: bgColours[index] }, resizing: false, sourcePosition: 'right', position: { x: 0, y: 60 * (index) }, data: { label: subQuestion.question[0] }, draggable: false })
     })
     shuffledOptions.map((option, index) => {
       initialNodes.push({ id: `${option}`, targetPosition: 'left', resizing: false, sourcePosition: 'top', position: { x: 250, y: 60 * (index) }, data: { label: option }, draggable: false })
@@ -101,22 +101,17 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
   return (<>
     {question && shuffledOptions && shuffledOptions.length > 0 &&
       <div>
-        <h1 className='font-semibold text-2xl text-orange-500'>Question {questionNumber}: Match the Columns</h1>
-        <h2 className='text-xl pt-3 pb-1'>{question.title}</h2>
+        <h1 className={`text-[22px] sm:text-2xl text-[#e2854f] ${disabled ? 'font-semibold' : ''} `}>Question {questionNumber}: Match the Columns</h1>
+        <h2 className={`text-xl sm:text-2xl pt-0 sm:pt-1 md:pt-3 ${disabled ? 'text-black' : 'text-white font-light'} `}>{question.title}</h2>
         <div className='flex flex-col max-w-lg mx-auto'>
-          <div className='flex pb-1 items-center justify-between'>
-            <div className='font-semibold mr-3 text-xl xs:text-2xl invisible'>a)</div>
-            <div className='flex flex-auto items-center justify-between'>
-              <label className={`text-xl sm:text-2xl w-[105px] sm:w-[140px] text-center text-red-500`} >
-                Column A
-              </label>
-              <label className={`text-xl sm:text-2xl w-[100px] sm:w-[140px] text-center text-gray-500`}>
-                Column B
-              </label>
+          <div className='flex items-center justify-between w-[350px] xs:w-[450px] sm:w-[500px]'>
+            <div className={`text-xl sm:text-2xl w-[105px] sm:w-[140px] text-center text-[#e2854f]`} >
+              Column A
             </div>
-            <div className='invisible'>(1 Mark)</div>
+            <div className={`text-xl sm:text-2xl w-[100px] sm:w-[140px] text-center text-[#e2854f]`}>
+              Column B
+            </div>
           </div>
-
           <div className='flex items-center justify-center w-[350px] xs:w-[450px] sm:w-[500px] h-[250px] md:h-[300px]'>
             <ReactFlow
               nodes={nodes}

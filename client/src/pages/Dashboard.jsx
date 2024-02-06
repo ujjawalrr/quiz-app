@@ -6,7 +6,6 @@ import { GiStarFormation } from "react-icons/gi";
 import { IoStarOutline } from "react-icons/io5";
 import { IoStarSharp } from "react-icons/io5";
 import StatsComponent from "../components/StatsComponent";
-import toasty from "../utils/Toast";
 
 const Dashboard = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -47,10 +46,8 @@ const Dashboard = () => {
         });
         const data = await res.json();
         if (data.success === false) {
-          toasty(data.message, "error");
           return;
         }
-        toasty("Feedback Recorded!", "success");
         setShowMessage(true);
       } catch (error) {
         console.log("Error in feedback!");
@@ -68,14 +65,14 @@ const Dashboard = () => {
 
   return (
     <div>
-      <div className="flex bg-gradient-to-r from-yellow-400 to-yellow-600 items-center p-3">
+      <div className="flex bg-gradient-to-r from-[#d16d2c] to-[#7f340a] items-center p-3">
         <h1 className="text-2xl font-semibold text-white ml-6 mr-4">
           Dashboard
         </h1>
         <div className="ml-auto mr-4">
           <div className="flex items-center">
             <FaUser className="text-white mr-2" />
-            <span className="text-white">{currentUser.name}</span>
+            <span className="text-white">Ujjawal</span>
           </div>
         </div>
       </div>
@@ -127,7 +124,7 @@ const Dashboard = () => {
           <div className="text-center">
             <Link
               to="/solutions"
-              className="bg-gradient-to-r from-orange-500 via-orange-300 to-yellow-300 text-white py-2 px-4 mt-2 rounded-md"
+              className="bg-gradient-to-r from-[#d16d2c] to-[#7f340a] text-white py-2 px-4 mt-2 rounded-md"
             >
               View Solutions
             </Link>
@@ -152,7 +149,7 @@ const Dashboard = () => {
                 key={index}
                 className="relative bg-white p-6 rounded-md shadow-md transition-transform transform hover:scale-105"
               >
-                <div className="absolute top-0 right-0 bg-gradient-to-r from-orange-500 via-orange-300 to-yellow-300 text-white px-2 py-1 rounded-tl-md rounded-br-md">
+                <div className="absolute top-0 right-0 bg-gradient-to-r from-[#d16d2c] to-[#7f340a] text-white px-2 py-1 rounded-tl-md rounded-br-md">
                   <span className="font-bold text-lg">Rank #{index + 1}</span>
                 </div>
                 <h3 className="text-lg font-semibold mb-2 mt-4 break-words">{`Name: ${performer.name}`}</h3>
