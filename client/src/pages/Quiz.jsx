@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from 'react';
-import whiteboard from '../assets/images/newBg.png'
+import whiteboard from '../assets/images/NewBg.png'
 import MCQ from '../components/MCQ';
 import MatchTheColumns from '../components/MatchTheColumns';
 import FillInTheBlanks from '../components/FillInTheBlanks';
