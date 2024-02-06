@@ -70,7 +70,7 @@ const ForgotPassword = ({ userEmail }) => {
                                 <input placeholder="Enter Your Registered Email" id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={`w-full px-3 py-2 border border-black rounded-md ${message!='' && 'border-red-500'}`} required />
                                 <p className='text-red-500 h-3'>{message}</p>
                             </div>
-                            <button disabled={loading} onClick={handleSubmit} type="button" className="w-full mt-2 py-2 bg-[#4477a6] text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Submitting' : 'Submit'}</button>
+                            <button disabled={loading} onClick={handleSubmit} type="button" className="w-full mt-2 py-2 bg-[#2a5387] text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Submitting' : 'Submit'}</button>
                         </div>
                     </div>
                 </div>

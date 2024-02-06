@@ -111,12 +111,10 @@ export const forgotPassword = async (req, res, next) => {
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 return next(errorHandler(500, "Can't send reset link!"));
-            } else {
-                console.log('Email sent');
             }
         });
 
-        res.status(200).json('Password reset email sent');
+        res.status(200).json(`Reset link sent on mail ${user.email}`);
     } catch (error) {
         next(error);
     }
@@ -131,12 +129,12 @@ export const resetPassword = async (req, res, next) => {
         const user = await User.findOne({ resetPasswordToken: token });
 
         if (!user) {
-            return next(errorHandler(400, 'Invalid or expired token'));
+            return next(errorHandler(400, 'Invalid or expired link'));
         }
 
         // Check if token is expired
         if (user.resetPasswordExpires < Date.now()) {
-            return next(errorHandler(400, 'Token has expired'));
+            return next(errorHandler(400, ' Reset link has expired'));
         }
 
         // Hash password and save to user

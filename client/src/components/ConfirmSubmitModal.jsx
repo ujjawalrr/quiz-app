@@ -8,7 +8,7 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { currentUser } = useSelector(state => state.user)
-    const { attemptedQuestions, checkedQuestions } = useSelector(state => state.question)
+    const { attemptedQuestions } = useSelector(state => state.question)
     const [attemptedQuestionsState, setAttemptedQuestionsState] = useState(attemptedQuestions);
     const [countSolved, setCountSolved] = useState(0);
     const [evaluating, setEvaluating] = useState(false);
@@ -16,17 +16,19 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
     const handleClose = () => setShowModal(false);
     const handleShow = () => {
         let attemptedQuestionsObj = {};
+        let count = 0;
         Object.entries(attemptedQuestions).forEach(([key, value]) => {
             if (value != '') {
+                count++;
                 attemptedQuestionsObj[key] = value;
             }
         });
         setAttemptedQuestionsState(attemptedQuestionsObj);
+        setCountSolved(count);
         setShowModal(true);
     };
     useEffect(() => {
         dispatch(updateAttemptedQuestions(attemptedQuestionsState));
-        setCountSolved(Object.keys(attemptedQuestions).length);
     }, [attemptedQuestionsState])
 
     const checkSolution = async (questionId, subQuestionId, markedAns) => {
@@ -126,10 +128,10 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
             console.error("Error occurred while checking solutions: ", error);
         }
     }
-
+console.log(attemptedQuestions)
     return (
         <div className=''>
-            <button onClick={handleShow} className='bg-red-500 text-white py-2 px-3 sm:px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Submit Quiz</button>
+            <button onClick={handleShow} className='bg-red-800 text-white py-2 px-3 sm:px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Submit Quiz</button>
             {showModal && (
                 <div className="font-sans fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
                     <div className="absolute w-full h-full bg-gray-900 opacity-50" onClick={handleClose}></div>
@@ -144,14 +146,14 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
                         </div>
                         <div className="p-3">
                             <p className=''>
-                                You have attempted {Object.keys(attemptedQuestions).length}/{totalQuestions} questions.
+                                You have attempted {countSolved}/{totalQuestions} questions.
                             </p>
                             <div className="py-2 mt-2">
                                 Once submitted, you won't be able to edit your answers.
                             </div>
                             <div className='flex justify-between align-items-center'>
-                                <button disabled={evaluating} onClick={handleClose} className="mt-2 py-2 px-4 bg-[#4477a6] text-white rounded-md hover:opacity-95 disabled:opacity-80">Cancel</button>
-                                <button disabled={evaluating} onClick={handleSubmit} className="mt-2 py-2 px-4 bg-red-500 text-white rounded-md hover:opacity-95 disabled:opacity-80">{evaluating ? 'Submitting' : 'Submit'}</button>
+                                <button disabled={evaluating} onClick={handleClose} className="mt-2 py-2 px-4 bg-red-500 text-white rounded-md hover:opacity-95 disabled:opacity-80">Cancel</button>
+                                <button disabled={evaluating} onClick={handleSubmit} className="mt-2 py-2 px-4 bg-red-900 text-white rounded-md hover:opacity-95 disabled:opacity-80">{evaluating ? 'Submitting' : 'Submit'}</button>
                             </div>
                         </div>
                     </div>

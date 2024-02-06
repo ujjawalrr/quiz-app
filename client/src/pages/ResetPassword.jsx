@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import toasty from '../utils/Toast';
-import bgImg from '../assets/images/bgImg.png'
+import loginBg from '../assets/images/loginBg.png'
 
 const ResetPassword = () => {
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ const ResetPassword = () => {
         e.preventDefault();
         if (password != confirmPassword) {
             setMessage("Password and Confirm Password don't match!")
-            setTimeout(()=>{
+            setTimeout(() => {
                 setMessage('');
             }, [3000])
             return
@@ -47,18 +47,20 @@ const ResetPassword = () => {
     };
 
     return (
-        <div className="container-full mx-auto flex justify-center items-center h-[100vh] bg-gradient-to-b from-[#4477a6] to-[#91a4b5]">
-            <div className='bg-white rounded-lg p-4'>
-                <h2 className='text-center font-semibold text-[#4477a6] mb-3 text-xl'>Change Password</h2>
-                <form className="w-full flex flex-col justify-center max-w-sm lg:min-w-[350px] mx-auto" onSubmit={handleSubmit}>
-                    <input placeholder="Enter New Password" id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={`px-3 py-2 mb-3 border border-black rounded-md ${message!='' && 'border-red-500'}`} required />
-                    <input placeholder="Confirm New Password" id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className={`px-3 py-2 border border-black rounded-md ${message!='' && 'border-red-500'}`} required />
-                    <p className='text-red-500 h-3'>{message}</p>
-                    <button type="submit" disabled={loading} className="w-full py-2 mt-3 bg-[#fdd341] text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Submitting' : 'Submit'}</button>
-                </form>
+        <div className="relative container-full mx-auto flex justify-center items-center h-[calc(100vh-60px)] bg-gradient-to-r from-yellow-400 to-yellow-600">
+            <div className='w-full'>
+                <img className='w-full h-[calc(100vh-60px)]' src={loginBg} alt="" />
             </div>
-            <div>
-                <img src={bgImg} alt="" />
+            <div className='absolute flex items-center justify-center p-3 top-0 w-full h-full'>
+                <div className='bg-white rounded-lg p-4'>
+                    <h2 className='text-center font-semibold text-[#d16d2c] mb-3 text-xl'>Change Password</h2>
+                    <form className="w-full flex flex-col justify-center max-w-sm lg:min-w-[350px] mx-auto" onSubmit={handleSubmit}>
+                        <input placeholder="Enter New Password" id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={`px-3 py-2 mb-3 border border-black rounded-md ${message != '' && 'border-red-500'}`} required />
+                        <input placeholder="Confirm New Password" id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className={`px-3 py-2 border border-black rounded-md ${message != '' && 'border-red-500'}`} required />
+                        <p className='text-red-500 h-3'>{message}</p>
+                        <button type="submit" disabled={loading} className="w-full py-2 mt-3 bg-gradient-to-r from-[#d16d2c] to-[#7f340a] text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Submitting' : 'Submit'}</button>
+                    </form>
+                </div>
             </div>
         </div>
     );

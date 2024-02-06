@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { FaUser } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { GiStarFormation } from "react-icons/gi";
 import { IoStarOutline } from "react-icons/io5";
 import { IoStarSharp } from "react-icons/io5";
 import StatsComponent from "../components/StatsComponent";
+import { updateCheckedQuestions } from "../redux/question/questionSlice";
 
 const Dashboard = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const { checkedQuestions } = useSelector((state) => state.question);
   const [selectedStars, setSelectedStars] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
@@ -29,6 +31,10 @@ const Dashboard = () => {
       }
     };
     loadPerformers();
+    if (checkedQuestions.feedback) {
+      setSelectedStars(checkedQuestions.feedback);
+      setShowMessage(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -48,6 +54,7 @@ const Dashboard = () => {
         if (data.success === false) {
           return;
         }
+        dispatch(updateCheckedQuestions(data));
         setShowMessage(true);
       } catch (error) {
         console.log("Error in feedback!");
@@ -65,29 +72,16 @@ const Dashboard = () => {
 
   return (
     <div>
-      <div className="flex bg-gradient-to-r from-[#d16d2c] to-[#7f340a] items-center p-3">
-        <h1 className="text-2xl font-semibold text-white ml-6 mr-4">
-          Dashboard
-        </h1>
-        <div className="ml-auto mr-4">
-          <div className="flex items-center">
-            <FaUser className="text-white mr-2" />
-            <span className="text-white">Ujjawal</span>
-          </div>
-        </div>
-      </div>
-
       <div className="px-2 sm:px-6 tb:px-10 lg:px-28 xl:px-48">
         <div className="mx-auto my-8">
           <div className="text-center">
-            <h2 className="text-3xl font-semibold mb-4">Performance Report</h2>
+            <h2 className="text-3xl font-semibold mb-4 text-[#7f340a] text-shadow">Performance Report</h2>
           </div>
         </div>
 
         <div className="mx-auto my-8 text-center">
           <h2 className="text-3xl font-semibold mb-4">Overview</h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white p-4 rounded-md shadow-md">
               <h3 className="text-lg font-semibold mb-2">Marks Scored</h3>
               <p className="text-2xl font-bold text-gray-700">
@@ -158,10 +152,9 @@ const Dashboard = () => {
                   <div
                     className="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-500 to-blue-500 rounded"
                     style={{
-                      width: `${
-                        (performer.marks / checkedQuestions.totalQuestions) *
+                      width: `${(performer.marks / checkedQuestions.totalQuestions) *
                         100
-                      }%`,
+                        }%`,
                     }}
                   ></div>
                 </div>

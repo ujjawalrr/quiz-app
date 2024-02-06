@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { updateAttemptedQuestions } from '../redux/question/questionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactFlow, { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow';
 import 'reactflow/dist/style.css';
+import { setBg } from './index.js';
 
 const MatchTheColumns = ({ question, questionNumber, disabled }) => {
   let initialNodes = []
@@ -11,7 +12,6 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
   const dispatch = useDispatch()
   const [data, setData] = useState(disabled ? checkedQuestions : attemptedQuestions);
   const bgColours = ['orange', '#ea5151', '#3aaf3a', '#4AAAF8'];
-  const colours = ['white', 'white', 'white', 'white'];
   const [shuffledOptions, setShuffledOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -44,15 +44,13 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
   const [edges, setEdges] = useState(initialEdges);
   useEffect(() => {
     question.subQuestions.map((subQuestion, index) => {
-      initialNodes.push({ id: `${question._id}_${subQuestion._id}`, style: { color: colours[index], backgroundColor: bgColours[index] }, resizing: false, sourcePosition: 'right', position: { x: 0, y: 60 * (index) }, data: { label: subQuestion.question[0] }, draggable: false })
+      initialNodes.push({ id: `${question._id}_${subQuestion._id}`, resizing: false, sourcePosition: 'right', position: { x: 0, y: 60 * (index) }, className: 'p-0 text-sm sm:text-xl w-[30%]', data: { label: <div className={`py-1`} style= {{ color: 'white', backgroundColor: bgColours[index] }} id={`${question._id}_${subQuestion._id}`}>{subQuestion.question[0]}</div> }, draggable: false })
     })
     shuffledOptions.map((option, index) => {
-      initialNodes.push({ id: `${option}`, targetPosition: 'left', resizing: false, sourcePosition: 'top', position: { x: 250, y: 60 * (index) }, data: { label: option }, draggable: false })
+      initialNodes.push({ id: `${option}`, targetPosition: 'left', resizing: false, sourcePosition: 'top', position: { x: 250, y: 60 * (index) }, className: 'p-0 text-sm sm:text-xl w-[30%]', data: { label: <div className={`py-1`} id={`option_${option}`}>{option}</div> }, draggable: false })
     })
     setNodes(initialNodes);
   }, [shuffledOptions]);
-  console.log("nodes: ", nodes)
-  console.log("edges: ", edges)
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -66,9 +64,13 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
     },
     [setEdges]
   );
+
   const updateUI = (connection) => {
-    setData({ ...data, [connection.source]: connection.target })
+    setData({ ...data, [connection.source]: connection.target });
+    const source = document.getElementById(connection.source)
+    setBg(`option_${connection.target}`, source.style.backgroundColor)
   }
+
   const onConnect = useCallback(
     (connection) => {
       setEdges((eds) => {
@@ -112,35 +114,20 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
               Column B
             </div>
           </div>
-          <div className='flex items-center justify-center w-[350px] xs:w-[450px] sm:w-[500px] h-[250px] md:h-[300px]'>
+          <div className='flex items-center justify-center w-[350px] xs:w-[450px] sm:w-[500px] h-[250px]'>
             <ReactFlow
               nodes={nodes}
               edges={edges}
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
               onConnect={onConnect}
+              preventScrolling={false}
+              panOnDrag={false}
+              selectionOnDrag={false}
+              panOnScroll= {false}
+            translateExtent = '[[0, 750], [2750, 2850]]'
             />
           </div>
-
-          {/* <div className='flex flex-col gap-3 xs:gap-4'>
-            {question.subQuestions.map((subQuestion, index) =>
-              <div className='flex items-center justify-between' key={subQuestion._id}>
-                <div className='font-semibold mr-1 xs:mr-3 text-xl xs:text-2xl'>{String.fromCharCode(index + 97)})</div>
-                <div className='flex flex-auto items-center justify-between'>
-                  <label htmlFor={subQuestion._id} className={`text-xl xs:text-2xl shadow-md z-0 rounded-lg p-2 w-[105px] sm:w-[140px] text-center bg-red-500 bg-[${colours[index]}] `} >
-                    {subQuestion.question[0]}
-                  </label>
-                  <input disabled={disabled} hidden type="number" className='bg-slate-200 p-2 border-b-2 border-black focus:outline-none focus:bg-slate-300' name={subQuestion._id} id={subQuestion._id} onChange={handleChange} />
-                  <div className='w-[100px] sm:w-[140px] text-center'>
-                    <label htmlFor={subQuestion._id} className={`text-xl xs:text-2xl shadow-md z-0 rounded-lg p-2 inline-block w-[50px] xs:w-[80px] text-center bg-gray-500`}>
-                      {shuffledOptions[index]}
-                    </label>
-                  </div>
-                </div>
-                <div className='text-slate-600'>({subQuestion.marks} Mark)</div>
-              </div>
-            )}
-          </div> */}
         </div>
       </div>
     }

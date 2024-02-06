@@ -35,17 +35,6 @@ const Solutions = () => {
     }, []);
     return (
         <div className='container-fluid'>
-            <div className="flex bg-gradient-to-r from-[#d16d2c] to-[#7f340a] items-center p-3">
-                <h1 className="text-2xl font-semibold text-white ml-6 mr-4">
-                    Dashboard
-                </h1>
-                <div className="ml-auto mr-4">
-                    <div className="flex items-center">
-                        <FaUser className="text-white mr-2" />
-                        <span className="text-white">Ujjawal</span>
-                    </div>
-                </div>
-            </div>
             {checkedQuestions && checkedQuestions != undefined &&
                 <div className="mx-auto py-5 w-full sm:w-[600px] md:w-[750px] tb:w-[800px]">
                     <h2 className="text-center text-3xl mb-4">

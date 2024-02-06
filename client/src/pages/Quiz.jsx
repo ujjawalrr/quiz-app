@@ -47,19 +47,8 @@ const Quiz = () => {
   }, [questions]);
   return (
     <div>
-      <div className="flex bg-gradient-to-r from-[#d16d2c] to-[#7f340a] items-center p-3">
-        <h1 className="text-2xl font-semibold text-white ml-6 mr-4">
-          Dashboard
-        </h1>
-        <div className="ml-auto mr-4">
-          <div className="flex items-center">
-            <FaUser className="text-white mr-2" />
-            <span className="text-white">Ujjawal</span>
-          </div>
-        </div>
-      </div>
       <div className="container-full flex items-center justify-center h-[calc(100vh-60px)] bg-gradient-to-b from-[#4477a6] to-[#91a4b5]">
-        <div className='relative w-full sm:w-[600px] md:w-[750px] tb:w-[850px] h-[90vh] sm:h-[550px] md:h-[550px]'>
+        <div className='relative w-full sm:w-[600px] md:w-[750px] tb:w-[850px] h-[calc(100vh-70px)]'>
           <div className='h-full w-full'>
             <img src={whiteboard} className='w-full h-full' alt="" />
           </div>
@@ -74,7 +63,7 @@ const Quiz = () => {
                   </React.Fragment>
                 )}
 
-                <div className={`px-0 sm:px-32 absolute bottom-[85px] flex items-center w-full ${activeTab == '1' ? 'justify-end' : 'justify-between'}`}>
+                <div className={`px-0 sm:px-32 absolute bottom-[10vh] flex items-center w-full ${activeTab == '1' ? 'justify-end' : 'justify-between'}`}>
                   {activeTab > '1' && <button onClick={() => openTab(parseInt(activeTab) - 1)} className='bg-[#7f340a] text-white py-2 w-20 sm:w-28 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Previous</button>}
                   {activeTab < questions.length.toString() && <button onClick={() => openTab(parseInt(activeTab) + 1)} className='bg-[#7f340a] text-white py-2 w-20 sm:w-28 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Next</button>}
                   {activeTab == questions.length && <ConfirmSubmitModal totalQuestions={totalQuestions} />}

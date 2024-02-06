@@ -58,7 +58,7 @@ const RegisterForm = () => {
                 <label htmlFor="password" className="w-1/4">Password:</label>
                 <input placeholder="Enter Your Password" id="password" type="password" onChange={handleChange} className="w-3/4 px-3 py-2 border border-black rounded-md" required />
             </div>
-            <button type="submit" disabled={loading} className="w-full py-2 my-2 bg-red-500 text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Registering' : 'Register'}</button>
+            <button type="submit" disabled={loading} className="w-full py-2 my-2 bg-red-800 text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Registering' : 'Register'}</button>
             <OAuth />
         </form>
     );
