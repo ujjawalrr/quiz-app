@@ -136,9 +136,10 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
           </div>
           {disabled && 
           <div>
-            <h1 className='font-semibold'>Correct Ans</h1>
-            {question.subQuestions.map((subQuestion)=>
-            <div>
+            <h1 className='font-semibold'>Correct Ans:</h1>
+            {question.subQuestions.map((subQuestion,index)=>
+            <div className='flex gap-2'>
+              <div className=' text-[#e2854f]'>{String.fromCharCode(index + 97)})</div>
               
               <div>{subQuestion.question[0]} = {subQuestion.correctAns}</div>
               
