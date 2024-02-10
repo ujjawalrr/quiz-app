@@ -104,6 +104,7 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
     }
     setEdges(initialEdges);
   }, [data, disabled]);
+  console.log(question)
 
   return (<>
     {question && shuffledOptions && shuffledOptions.length > 0 &&
@@ -133,6 +134,18 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
               translateExtent='[[0, 750], [2750, 2850]]'
             />
           </div>
+          {disabled && 
+          <div>
+            <h1 className='font-semibold'>Correct Ans</h1>
+            {question.subQuestions.map((subQuestion)=>
+            <div>
+              
+              <div>{subQuestion.question[0]} = {subQuestion.correctAns}</div>
+              
+            </div>
+            )}
+          </div>
+          }
         </div>
       </div>
     }
