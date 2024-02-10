@@ -32,7 +32,6 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
     }, [attemptedQuestionsState])
 
     const checkSolution = async (questionId, subQuestionId, markedAns) => {
-        console.log("in check sol", questionId, subQuestionId, markedAns)
         try {
             const res = await fetch('/api/question/evaluate',
                 {
@@ -128,7 +127,6 @@ const ConfirmSubmitModal = ({ totalQuestions }) => {
             console.error("Error occurred while checking solutions: ", error);
         }
     }
-console.log(attemptedQuestions)
     return (
         <div className=''>
             <button onClick={handleShow} className='bg-red-800 text-white py-2 px-3 sm:px-6 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Submit Quiz</button>
@@ -153,7 +151,7 @@ console.log(attemptedQuestions)
                             </div>
                             <div className='flex justify-between align-items-center'>
                                 <button disabled={evaluating} onClick={handleClose} className="mt-2 py-2 px-4 bg-red-500 text-white rounded-md hover:opacity-95 disabled:opacity-80">Cancel</button>
-                                <button disabled={evaluating} onClick={handleSubmit} className="mt-2 py-2 px-4 bg-red-900 text-white rounded-md hover:opacity-95 disabled:opacity-80">{evaluating ? 'Submitting' : 'Submit'}</button>
+                                <button disabled={evaluating} onClick={handleSubmit} className="mt-2 py-2 px-4 bg-red-900 text-white rounded-md hover:opacity-95 disabled:opacity-80">Submit</button>
                             </div>
                         </div>
                     </div>

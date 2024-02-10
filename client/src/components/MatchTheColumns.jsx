@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { updateAttemptedQuestions } from '../redux/question/questionSlice';
+import { updateAttemptedQuestions, updateOptionColors } from '../redux/question/questionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactFlow, { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -8,12 +8,13 @@ import { setBg } from './index.js';
 const MatchTheColumns = ({ question, questionNumber, disabled }) => {
   let initialNodes = []
   let initialEdges = [];
-  const { attemptedQuestions, checkedQuestions } = useSelector(state => state.question)
+  const { attemptedQuestions, checkedQuestions, optionColors } = useSelector(state => state.question)
   const dispatch = useDispatch()
   const [data, setData] = useState(disabled ? checkedQuestions : attemptedQuestions);
   const bgColours = ['orange', '#ea5151', '#3aaf3a', '#4AAAF8'];
   const [shuffledOptions, setShuffledOptions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [optionColorsState, setOptionColorsState] = useState(optionColors);
   const [error, setError] = useState(false);
   useEffect(() => {
     const loadOptions = async () => {
@@ -44,10 +45,10 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
   const [edges, setEdges] = useState(initialEdges);
   useEffect(() => {
     question.subQuestions.map((subQuestion, index) => {
-      initialNodes.push({ id: `${question._id}_${subQuestion._id}`, resizing: false, sourcePosition: 'right', position: { x: 0, y: 60 * (index) }, className: 'p-0 text-sm sm:text-xl w-[30%]', data: { label: <div className={`py-1`} style= {{ color: 'white', backgroundColor: bgColours[index] }} id={`${question._id}_${subQuestion._id}`}>{subQuestion.question[0]}</div> }, draggable: false })
+      initialNodes.push({ id: `${question._id}_${subQuestion._id}`, resizing: false, sourcePosition: 'right', position: { x: 0, y: 60 * (index) }, className: 'p-0 text-sm sm:text-xl w-[30%]', data: { label: <div className={`py-1`} style={{ color: 'white', backgroundColor: bgColours[index] }} id={`${question._id}_${subQuestion._id}`}>{subQuestion.question[0]}</div> }, draggable: false })
     })
     shuffledOptions.map((option, index) => {
-      initialNodes.push({ id: `${option}`, targetPosition: 'left', resizing: false, sourcePosition: 'top', position: { x: 250, y: 60 * (index) }, className: 'p-0 text-sm sm:text-xl w-[30%]', data: { label: <div className={`py-1`} id={`option_${option}`}>{option}</div> }, draggable: false })
+      initialNodes.push({ id: `${option}`, targetPosition: 'left', resizing: false, sourcePosition: 'top', position: { x: 250, y: 60 * (index) }, className: 'p-0 text-sm sm:text-xl w-[30%]', data: { label: <div className={`py-1`} style={{ backgroundColor: optionColors[`option_${option}`] }} id={`option_${option}`}>{option}</div> }, draggable: false })
     })
     setNodes(initialNodes);
   }, [shuffledOptions]);
@@ -68,8 +69,12 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
   const updateUI = (connection) => {
     setData({ ...data, [connection.source]: connection.target });
     const source = document.getElementById(connection.source)
+    setOptionColorsState({...optionColorsState, [`option_${connection.target}`]: source.style.backgroundColor})
     setBg(`option_${connection.target}`, source.style.backgroundColor)
   }
+  useEffect(()=>{
+    dispatch(updateOptionColors(optionColorsState))
+  }, [optionColorsState]);
 
   const onConnect = useCallback(
     (connection) => {
@@ -102,9 +107,9 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
 
   return (<>
     {question && shuffledOptions && shuffledOptions.length > 0 &&
-      <div>
+      <div className='transition-all ease-in-out duration-1000'>
         <h1 className={`text-[22px] sm:text-2xl text-[#e2854f] ${disabled ? 'font-semibold' : ''} `}>Question {questionNumber}: Match the Columns</h1>
-        <h2 className={`text-xl sm:text-2xl pt-0 sm:pt-1 md:pt-3 ${disabled ? 'text-black' : 'text-white font-light'} `}>{question.title}</h2>
+        <h2 className={`text-xl sm:text-2xl pt-0 tb:pt-1 xl:pt-2 ${disabled ? 'text-black' : 'text-white font-light'} `}>{question.title}</h2>
         <div className='flex flex-col max-w-lg mx-auto'>
           <div className='flex items-center justify-between w-[350px] xs:w-[450px] sm:w-[500px]'>
             <div className={`text-xl sm:text-2xl w-[105px] sm:w-[140px] text-center text-[#e2854f]`} >
@@ -114,7 +119,7 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
               Column B
             </div>
           </div>
-          <div className='flex items-center justify-center w-[350px] xs:w-[450px] sm:w-[500px] h-[250px]'>
+          <div className='relative flex items-center justify-center w-[350px] xs:w-[450px] sm:w-[500px] h-[250px]'>
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -124,8 +129,8 @@ const MatchTheColumns = ({ question, questionNumber, disabled }) => {
               preventScrolling={false}
               panOnDrag={false}
               selectionOnDrag={false}
-              panOnScroll= {false}
-            translateExtent = '[[0, 750], [2750, 2850]]'
+              panOnScroll={false}
+              translateExtent='[[0, 750], [2750, 2850]]'
             />
           </div>
         </div>

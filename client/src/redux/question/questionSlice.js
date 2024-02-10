@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     attemptedQuestions: {},
     checkedQuestions: {},
+    optionColors: {},
     error: false,
     loading: false,
 };
@@ -29,10 +30,15 @@ const questionSlice = createSlice ({
             state.checkedQuestions = action.payload;
             state.loading = false;
             state.error = false;
+        },
+        updateOptionColors: (state, action) => {
+            state.optionColors = action.payload;
+            state.loading = false;
+            state.error = false;
         }
     }
 })
 
-export const { neutral, updateQuestions, updateAttemptedQuestions, updateCheckedQuestions } = questionSlice.actions;
+export const { neutral, updateQuestions, updateAttemptedQuestions, updateCheckedQuestions, updateOptionColors } = questionSlice.actions;
 
 export default questionSlice.reducer;

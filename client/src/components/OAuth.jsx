@@ -31,7 +31,7 @@ const OAuth = () => {
         }
     }
     return (
-        <button onClick={handleGoogleClick} type='button' disabled={loading} className="w-full py-2 bg-[#2a5387] text-white rounded-md hover:opacity-95 disabled:opacity-80">Continue with Google</button>
+        <button onClick={handleGoogleClick} type='button' disabled={loading} className="w-full py-2 border border-[#492815] text-[#492815] rounded-md hover:opacity-95 disabled:opacity-80">Continue with Google</button>
     )
 }
 

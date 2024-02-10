@@ -105,7 +105,7 @@ export const forgotPassword = async (req, res, next) => {
             from: 'josaacounsellors@gmail.com',
             to: user.email,
             subject: 'Password Reset Request',
-            text: `Click on this link to reset your password: http://localhost:5173/reset/${resetToken}`
+            text: `Click on this link to reset your password: https://quizify-mnzw.onrender.com/reset/${resetToken}`
         };
 
         transporter.sendMail(mailOptions, (error, info) => {

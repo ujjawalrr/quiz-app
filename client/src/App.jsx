@@ -8,7 +8,7 @@ import { ToastContainer } from "react-toastify"
 import ResetPassword from "./pages/ResetPassword"
 import Solutions from "./pages/Solutions"
 import Header from "./components/Header"
-import Test from "./pages/Test"
+import LandingPage from "./pages/LandingPage"
 
 const App = () => {
   return (
@@ -25,7 +25,7 @@ const App = () => {
           <Route path="/solutions" element={<Solutions />} />
         </Route>
         <Route path="/reset/:token" element={<ResetPassword />} />
-        <Route path="/test" element={<Test />} />
+        <Route path="/home" element={<LandingPage />} />
       </Routes>
     </BrowserRouter>
   )

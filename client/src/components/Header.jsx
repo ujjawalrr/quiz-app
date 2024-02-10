@@ -3,6 +3,7 @@ import { FaUser } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutFailure, logoutStart, logoutSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { updateAttemptedQuestions } from '../redux/question/questionSlice';
 
 const Header = () => {
     const { currentUser } = useSelector((state) => state.user);
@@ -17,7 +18,8 @@ const Header = () => {
                 dispatch(logoutFailure(data.message));
                 return;
             }
-            dispatch(logoutSuccess(data));
+            dispatch(updateAttemptedQuestions({}));
+            dispatch(logoutSuccess());
         } catch (error) {
             dispatch(logoutFailure(error.message));
         }

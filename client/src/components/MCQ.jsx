@@ -16,9 +16,9 @@ const MCQ = ({ question, questionNumber, disabled }) => {
 
   return (<>
     {question &&
-      <div>
+      <div className='transition-all ease-in-out duration-1000'>
         <h1 className={`text-[22px] sm:text-2xl text-[#e2854f] ${disabled ? 'font-semibold' : ''} `}>Question {questionNumber}: Multiple Choice Questions</h1>
-        <h2 className={`text-xl sm:text-2xl pt-0 sm:pt-1 md:pt-3 pb-3 md:pb-5 ${disabled ? 'text-black' : 'text-white font-light'} `}>{question.title}</h2>
+        <h2 className={`text-xl sm:text-2xl pt-0 tb:pt-1 xl:pt-2 pb-3 md:pb-5 ${disabled ? 'text-black' : 'text-white font-light'} `}>{question.title}</h2>
         <div className='flex flex-col gap-10'>
           {question.subQuestions.map((subQuestion, index) =>
             <div key={subQuestion._id}>

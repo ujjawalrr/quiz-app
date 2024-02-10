@@ -1,42 +1,28 @@
 import React, { useState } from 'react';
 
-const TestComponent = () => {
-  const [drawing, setDrawing] = useState(false);
-  const [lineStyle, setLineStyle] = useState({});
+function TestComponent() {
+  const [path, setPath] = useState([]);
 
-  const handleClick = (e) => {
-    const rect = e.target.getBoundingClientRect();
-    const initialX = rect.left + (rect.width / 2);
-    const initialY = rect.top + (rect.height / 2);
-
-    setLineStyle({
-      left: initialX + 'px',
-      top: initialY + 'px',
-      height: '0'
-    });
-
-    setDrawing(true);
-  };
-
-  const handleMouseMove = (e) => {
-    if (drawing) {
-      const newHeight = Math.sqrt(Math.pow(e.clientX - parseInt(lineStyle.left), 2) + Math.pow(e.clientY - parseInt(lineStyle.top), 2)) + 'px';
-      setLineStyle(prevStyle => ({ ...prevStyle, height: newHeight }));
-    }
-  };
-
-  const handleMouseUp = () => {
-    setDrawing(false);
-  };
+  function handleMouseMove(event) {
+    const { clientX, clientY } = event;
+    const newPathPoint = { x: clientX +5, y: clientY -80 };
+    console.log(path)
+    setPath(prevPath => [...prevPath, newPathPoint]);
+  }
 
   return (
-    <div className="relative" onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
-      <div id="clickableElement" className="cursor-pointer" onClick={handleClick}>
-        Click me
-      </div>
-      <div id="line" className="absolute bg-red-500" style={lineStyle}></div>
+    <div style={{ height: '100vh' }} onMouseMove={handleMouseMove}>
+      <h1>Move your cursor around to trace the path!</h1>
+      <svg width="100%" height="100%">
+        <polyline
+          points={path.map(point => `${point.x},${point.y}`).join(' ')}
+          fill="none"
+          stroke="blue"
+          strokeWidth="2"
+        />
+      </svg>
     </div>
   );
-};
+}
 
 export default TestComponent;

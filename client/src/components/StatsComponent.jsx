@@ -4,17 +4,17 @@ import NormalDistributionGraph from "./NormalDistributionGraph";
 
 const StatsComponent = ({ appearedUsers }) => {
   const { checkedQuestions } = useSelector((state) => state.question);
+  const { currentUser } = useSelector((state) => state.user);
 
-  // Sort users by marks in descending order
-  const sortedUsers = appearedUsers.slice().sort((a, b) => b.marks - a.marks);
+  function findIndexFromValue(arr, value) {
+    const index = arr.findIndex(obj => Object.values(obj).includes(value));
+    return index;
+  }
+  
+  const myRank = findIndexFromValue(appearedUsers, currentUser._id) + 1;
 
-  // Calculate my marks
   const myMarks = checkedQuestions.marks;
 
-  // Calculate my rank
-  const myRank = sortedUsers.filter((user) => user.marks > myMarks).length + 1;
-
-  // Calculate mean and standard deviation
   const mean =
     appearedUsers.reduce((sum, user) => sum + user.marks, 0) /
     appearedUsers.length;
@@ -24,7 +24,6 @@ const StatsComponent = ({ appearedUsers }) => {
   );
   const stdDev = Math.sqrt(squaredDeviations / appearedUsers.length);
 
-  // Define the range for the x-axis (marks)
   const range = [...Array(11).keys()];
 
   return (

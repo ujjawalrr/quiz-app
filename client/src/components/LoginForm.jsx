@@ -58,7 +58,7 @@ const LoginForm = () => {
             <div className="flex items-center py-2">
                 <ForgotPassword userEmail={loginData.email} />
             </div>
-            <button type="submit" disabled={loading} className="w-full py-2 my-2 bg-red-800 text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Logging in...' : 'Login'}</button>
+            <button type="submit" disabled={loading} className="w-full py-2 my-2 bg-gradient-to-r from-[#d16d2c] to-[#7f340a] border border-[#492815] text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Logging in...' : 'Login'}</button>
             <OAuth />
         </form>
     );

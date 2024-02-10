@@ -18,7 +18,7 @@ export const getPerformers = async (req, res, next) => {
 
         const order = req.query.order || 'desc';
 
-        const performers = await Performer.find({}, 'name marks').sort(
+        const performers = await Performer.find({}, 'name marks userId').sort(
             {[sort]: order}
         ).limit(limit);
 
@@ -29,9 +29,8 @@ export const getPerformers = async (req, res, next) => {
 }
 
 export const giveFeedback = async (req, res, next) => {
-    const userId = req.params.id;
     try {
-        const performer = await Performer.findOne({userId});
+        const performer = await Performer.findById(req.params.id);
         performer.feedback = req.body.feedback;
         performer.save();
         res.status(200).json(performer);

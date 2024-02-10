@@ -7,6 +7,7 @@ import { IoStarOutline } from "react-icons/io5";
 import { IoStarSharp } from "react-icons/io5";
 import StatsComponent from "../components/StatsComponent";
 import { updateCheckedQuestions } from "../redux/question/questionSlice";
+import toasty from "../utils/Toast";
 
 const Dashboard = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -36,14 +37,14 @@ const Dashboard = () => {
       setShowMessage(true);
     }
   }, []);
-
+console.log(appearedUsers);
   useEffect(() => {
     setTopPerformers(appearedUsers.slice(0, 3));
   }, [appearedUsers]);
   const handleStarClick = (stars) => {
     const handleSubmit = async () => {
       try {
-        const res = await fetch(`/api/performer/feedback/${currentUser._id}`, {
+        const res = await fetch(`/api/performer/feedback/${checkedQuestions._id}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -57,7 +58,7 @@ const Dashboard = () => {
         dispatch(updateCheckedQuestions(data));
         setShowMessage(true);
       } catch (error) {
-        console.log("Error in feedback!");
+        toasty("Error in recording feedback!", 'error')
       }
     };
     handleSubmit();

@@ -6,6 +6,9 @@ import MatchTheColumns from '../components/MatchTheColumns';
 import FillInTheBlanks from '../components/FillInTheBlanks';
 import ConfirmSubmitModal from '../components/ConfirmSubmitModal';
 import { FaUser } from 'react-icons/fa';
+import { logoutFailure, logoutStart, logoutSuccess } from '../redux/user/userSlice';
+import { updateAttemptedQuestions } from '../redux/question/questionSlice';
+import ConfirmCancelModal from '../components/ConfirmCancelModel';
 
 const Quiz = () => {
   const [questions, setQuestions] = useState([]);
@@ -45,10 +48,11 @@ const Quiz = () => {
     }
     setTotalQuestions(count);
   }, [questions]);
+  
   return (
     <div>
       <div className="container-full flex items-center justify-center h-[calc(100vh-60px)] bg-gradient-to-b from-[#4477a6] to-[#91a4b5]">
-        <div className='relative w-full sm:w-[600px] md:w-[750px] tb:w-[850px] h-[calc(100vh-70px)]'>
+        <div className='relative w-full sm:w-[600px] md:w-[750px] tb:w-[850px] h-[500px] tb:h-[500px]'>
           <div className='h-full w-full'>
             <img src={whiteboard} className='w-full h-full' alt="" />
           </div>
@@ -63,7 +67,8 @@ const Quiz = () => {
                   </React.Fragment>
                 )}
 
-                <div className={`px-0 sm:px-32 absolute bottom-[10vh] flex items-center w-full ${activeTab == '1' ? 'justify-end' : 'justify-between'}`}>
+                <div className={`px-0 sm:px-32 absolute bottom-[50px] xl:bottom-[60px] flex items-center w-full justify-center gap-3 sm:justify-between`}>
+                  {activeTab == '1' && <ConfirmCancelModal />}
                   {activeTab > '1' && <button onClick={() => openTab(parseInt(activeTab) - 1)} className='bg-[#7f340a] text-white py-2 w-20 sm:w-28 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Previous</button>}
                   {activeTab < questions.length.toString() && <button onClick={() => openTab(parseInt(activeTab) + 1)} className='bg-[#7f340a] text-white py-2 w-20 sm:w-28 rounded-md shadow-lg z-10 hover:opacity-95 disabled:opacity-80'>Next</button>}
                   {activeTab == questions.length && <ConfirmSubmitModal totalQuestions={totalQuestions} />}

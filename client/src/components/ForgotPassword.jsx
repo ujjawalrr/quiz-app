@@ -41,7 +41,7 @@ const ForgotPassword = ({ userEmail }) => {
                 return;
             }
             setLoading(false);
-            toasty('Password reset email sent. Please check your email.', "success")
+            toasty('Password reset link has been sent. Please check your email.', "success")
             navigate('/');
         } catch (error) {
             toasty(error.message, "error")
@@ -51,7 +51,7 @@ const ForgotPassword = ({ userEmail }) => {
 
     return (
         <div>
-            <button type='button' className="w-full font-semibold text-[#4477a6]" onClick={handleShow}>Forgot Password?</button>
+            <button type='button' className="w-full font-semibold text-[#492815]" onClick={handleShow}>Forgot Password?</button>
             {showModal && (
                 <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
                     <div className="absolute w-full h-full bg-gray-900 opacity-50" onClick={handleClose}></div>
@@ -70,7 +70,7 @@ const ForgotPassword = ({ userEmail }) => {
                                 <input placeholder="Enter Your Registered Email" id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={`w-full px-3 py-2 border border-black rounded-md ${message!='' && 'border-red-500'}`} required />
                                 <p className='text-red-500 h-3'>{message}</p>
                             </div>
-                            <button disabled={loading} onClick={handleSubmit} type="button" className="w-full mt-2 py-2 bg-[#2a5387] text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Submitting' : 'Submit'}</button>
+                            <button disabled={loading} onClick={handleSubmit} type="button" className="w-full mt-2 py-2 bg-gradient-to-r from-[#d16d2c] to-[#7f340a] text-white rounded-md hover:opacity-95 disabled:opacity-80">{loading ? 'Submitting' : 'Submit'}</button>
                         </div>
                     </div>
                 </div>
